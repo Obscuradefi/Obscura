@@ -34,7 +34,7 @@ const StakeTab = () => {
             }}>
                 <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>⏳</div>
                 <h3 style={{ color: 'var(--neon-purple)', marginBottom: '10px', fontSize: '1.3rem' }}>
-                    STAKING LIVE AFTER RIALO TESTNET LAUNCH
+                    STAKING COMING SOON
                 </h3>
                 <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem' }}>
                     Yield vaults will be available soon. Stay tuned.

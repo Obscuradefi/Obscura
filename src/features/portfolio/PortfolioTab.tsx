@@ -202,7 +202,7 @@ const PortfolioTab = ({ onNavigate }: { onNavigate?: (tab: TabId) => void }) => 
                                         <div style={{ width: '42px', height: '42px', background: 'var(--neon-purple)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.2rem', color: 'white' }}>🔒</div>
                                         <div>
                                             <div style={{ fontWeight: 600, fontSize: '1.1rem', color: 'var(--neon-purple)' }}>cUSDO</div>
-                                            <div style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>Rialo Privacy Layer</div>
+                                            <div style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>Obscura Privacy Layer</div>
                                         </div>
                                     </div>
                                 </td>

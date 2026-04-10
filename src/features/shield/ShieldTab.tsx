@@ -190,7 +190,7 @@ const ShieldTab = () => {
                         <div style={{ width: '48px', height: '48px', background: 'var(--neon-purple)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.4rem', color: 'white' }}>🔒</div>
                         <div style={{ flex: 1 }}>
                             <div style={{ fontWeight: 600, fontSize: '1.2rem', color: 'white' }}>cUSDO</div>
-                            <div style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>Rialo Privacy Layer</div>
+                            <div style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>Obscura Privacy Layer</div>
                         </div>
                         <div className="mono" style={{ fontSize: '1.4rem', color: 'var(--neon-purple)', textAlign: 'right', letterSpacing: showEncrypted ? '0' : '4px' }}>
                             {showEncrypted ? encryptedBalanceVal.toFixed(2) : '******'}

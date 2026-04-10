@@ -19,12 +19,12 @@ const Navbar = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
         <img 
           src="/Logo + Wordmark 1.jpg" 
-          alt="Rialo Obscura" 
+          alt="Obscura" 
           style={{ height: '40px', objectFit: 'contain' }} 
         />
         <div className="nav-links" style={{ display: 'flex', gap: '10px' }}>
           <a href="https://www.rialo.io/#home" className="nav-link">HOME</a>
-          <a href="https://www.rialo.io/docs" className="nav-link">DOCS</a>
+          <a href="/docs" className="nav-link">DOCS</a>
           <a href="https://www.rialo.io/blog" className="nav-link">BLOG</a>
           <a href="http://learn.rialo.io/" className="nav-link">LEARN</a>
           <a href="https://www.rialo.io/news" className="nav-link">NEWS</a>

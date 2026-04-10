@@ -8,25 +8,25 @@ const Footer = () => {
         <div>
           <img
             src="/Logo + Wordmark 1.jpg"
-            alt="Rialo Obscura"
+            alt="Obscura"
             style={{ height: '35px', marginBottom: '25px', opacity: 0.9, borderRadius: '4px' }}
           />
           <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', lineHeight: '1.8', maxWidth: '300px' }}>
-            Rialo Obscura is the premier privacy layer for Base Sepolia, enabling shielded transactions and encrypted asset management through advanced cryptographic protocols.
+            Obscura is the premier privacy-first DeFi protocol, enabling shielded transactions, AI-powered trading, and encrypted asset management through advanced cryptographic protocols.
           </p>
         </div>
 
         <div>
           <h4 style={{ color: 'white', marginBottom: '25px', fontFamily: 'JetBrains Mono', fontSize: '1.1rem' }}>QUICK LINKS</h4>
           <a href="https://www.rialo.io/#home" className="footer-link">HOME</a>
-          <a href="https://www.rialo.io/docs" className="footer-link">DOCS</a>
+          <a href="/docs" className="footer-link">DOCS</a>
           <a href="https://www.rialo.io/blog" className="footer-link">BLOG</a>
           <a href="http://learn.rialo.io/" className="footer-link">LEARN</a>
           <a href="https://www.rialo.io/news" className="footer-link">NEWS</a>
         </div>
 
         <div>
-          <h4 style={{ color: 'white', marginBottom: '25px', fontFamily: 'JetBrains Mono', fontSize: '1.1rem' }}>ABOUT RIALO</h4>
+          <h4 style={{ color: 'white', marginBottom: '25px', fontFamily: 'JetBrains Mono', fontSize: '1.1rem' }}>COMMUNITY</h4>
           <a href="https://discord.com/invite/RialoProtocol" className="footer-link">DISCORD</a>
           <a href="https://x.com/RialoHQ" className="footer-link">TWITTER</a>
           <a href="https://t.me/rialoprotocol" className="footer-link">TELEGRAM</a>

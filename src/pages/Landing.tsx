@@ -324,9 +324,9 @@ const Landing = () => {
     ];
 
     const howItWorks = [
-        { step: 1, icon: '🔐', title: 'Deposit & Shield', description: 'Deposit tokens into the privacy layer. Shield your balance from public view using Rialo\'s REX encryption.', color: 'var(--neon-cyan)' },
+        { step: 1, icon: '🔐', title: 'Deposit & Shield', description: 'Deposit tokens into the privacy layer. Shield your balance from public view using advanced REX encryption.', color: 'var(--neon-cyan)' },
         { step: 2, icon: '⚡', title: 'Swap & Trade', description: 'AI-powered routing finds the best price across AMM pools and RFQ market makers. Zero slippage, zero MEV.', color: 'var(--neon-purple)' },
-        { step: 3, icon: '📈', title: 'Earn & Grow', description: 'Supply liquidity to pools, earn trading fees, and compound your rewards automatically on Rialo.', color: '#00FF88' },
+        { step: 3, icon: '📈', title: 'Earn & Grow', description: 'Supply liquidity to pools, earn trading fees, and compound your rewards automatically on Obscura.', color: '#00FF88' },
     ];
 
     const comparisonData = [
@@ -353,14 +353,14 @@ const Landing = () => {
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
                             style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 20px', background: 'rgba(0,240,255,0.08)', border: '1px solid rgba(0,240,255,0.25)', borderRadius: '30px', marginBottom: '30px' }}>
                             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00FF88', boxShadow: '0 0 10px #00FF88' }} />
-                            <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.8rem', color: 'var(--neon-cyan)', letterSpacing: '1px' }}>BUILT ON RIALO INFRASTRUCTURE</span>
+                            <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.8rem', color: 'var(--neon-cyan)', letterSpacing: '1px' }}>PRIVACY-FIRST DEFI PROTOCOL</span>
                         </motion.div>
 
-                        <img src="/Logo 2.jpg" alt="Rialo Obscura"
+                        <img src="/Logo 2.jpg" alt="Obscura"
                             style={{ width: '120px', marginBottom: '40px', borderRadius: '50%', border: '3px solid var(--neon-cyan)', boxShadow: '0 0 40px rgba(0, 240, 255, 0.3)', display: 'block', margin: '0 auto 40px' }} />
 
                         <h1 className="glow-text" style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', marginBottom: '20px', letterSpacing: '3px', fontFamily: 'Rajdhani' }}>
-                            RIALO OBSCURA
+                            OBSCURA
                         </h1>
 
                         <p style={{ color: 'var(--neon-cyan)', fontSize: '1.5rem', marginBottom: '15px', fontFamily: 'JetBrains Mono', textTransform: 'uppercase', letterSpacing: '2px' }}>
@@ -369,7 +369,7 @@ const Landing = () => {
 
                         <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', marginBottom: '50px', maxWidth: '750px', lineHeight: '1.8', margin: '0 auto 50px' }}>
                             Next-generation DeFi platform with AI-powered trading, hybrid AMM+RFQ routing, encrypted vaults, and on-chain privacy.
-                            <br />Simulating the Rialo Network on Base Sepolia Testnet.
+                            <br />Built on Rialo Infrastructure — currently live on Base Sepolia Testnet.
                         </p>
 
                         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -643,7 +643,7 @@ const Landing = () => {
                             {[
                                 { value: '6', label: 'SUPPORTED ASSETS', color: 'var(--neon-cyan)' },
                                 { value: '3', label: 'ROUTING OPTIONS', color: 'var(--neon-purple)' },
-                                { value: 'RIALO', label: 'SIMULATION (BASE SEPOLIA)', color: 'var(--neon-cyan)' },
+                                { value: 'OBSCURA', label: 'LIVE ON BASE SEPOLIA', color: 'var(--neon-cyan)' },
                                 { value: '🔐', label: 'ENCRYPTED VAULTS', color: 'var(--neon-purple)' },
                             ].map(stat => (
                                 <div key={stat.label}>
