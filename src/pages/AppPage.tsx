@@ -14,6 +14,7 @@ import SwapAgent from '../features/swap/SwapAgent';
 import ShieldTab from '../features/shield/ShieldTab';
 import BackgroundGrid from '../components/BackgroundGrid';
 import { addActivity } from '../lib/fluxMock';
+import { useLiveActivitySync } from '../hooks/useLiveActivitySync';
 
 const RIALO_USDC_ADDRESS = '0x191798C747807ae164f2a28fA5DFb5145AcE4b6B';
 const MINT_ABI = [
@@ -21,6 +22,9 @@ const MINT_ABI = [
 ];
 
 const AppPage = () => {
+    // 🔗 Mount our live event listener for external agent sync
+    useLiveActivitySync();
+
     const [activeTab, setActiveTab] = useState<TabId>('portfolio');
     const { address, isConnected } = useAccount();
     const { writeContract } = useWriteContract();
