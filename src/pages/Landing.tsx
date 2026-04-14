@@ -190,11 +190,8 @@ const Landing: React.FC = () => {
               </p>
 
               <div className="hero-cta-row">
-                <button className="btn-primary" onClick={goToApp} style={{ fontSize: '0.7rem', paddingInline: 28 }}>
-                  Launch app
-                </button>
                 <button
-                  className="btn-secondary"
+                  className="btn-primary"
                   onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
                   style={{ fontSize: '0.7rem' }}
                 >

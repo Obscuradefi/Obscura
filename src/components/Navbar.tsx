@@ -23,15 +23,8 @@ const Navbar: React.FC = () => {
           <span style={{ fontFamily: "'MADE Future X Header', sans-serif", color: 'var(--green-400)', letterSpacing: '1px' }}>OBSCURA</span>
         </div>
 
-        <div className="nav-links">
-          <button className="nav-link-item" onClick={() => navigate('/app?tab=swap')}>Swap</button>
-          <button className="nav-link-item" onClick={() => navigate('/app?tab=liquidity')}>Pools</button>
-          <button className="nav-link-item" onClick={() => navigate('/app?tab=shield')}>Vault</button>
-          <button className="nav-link-item" onClick={() => navigate('/app?tab=markets')}>Markets</button>
-          <a href="/docs" className="nav-link-item" style={{ textDecoration: 'none' }}>Docs</a>
-        </div>
-
         <div className="nav-actions">
+          <a href="/docs" className="nav-link-item" style={{ textDecoration: 'none' }}>Docs</a>
           <ConnectButton.Custom>
             {({ account, openConnectModal, mounted }) => {
               if (!mounted) return null;
