@@ -1,9 +1,7 @@
-// SimpleSwap DEX Configuration
-// Contract: 0x79b575397552f71Bc37d978DF8F75650B05f635a (Base Sepolia)
+
 
 export const SIMPLE_SWAP_ADDRESS = '0x79b575397552f71Bc37d978DF8F75650B05f635a' as const;
 
-// SimpleSwap Contract ABI
 export const SIMPLE_SWAP_ABI = [
     {
         type: 'function',
@@ -39,11 +37,6 @@ export const SIMPLE_SWAP_ABI = [
     },
 ] as const;
 
-// ============================================
-// SIMPLE AMM CONTRACT (Automated Market Maker)
-// ============================================
-
-// SimpleAMM Contract (Deployed on Base Sepolia) - BASIC 1:1 RATIO (No Pyth)
 export const SIMPLE_AMM_ADDRESS = '0x944b6cB6d8621603B4a094955123dbD96e289bA2' as const;
 
 export const SIMPLE_AMM_ABI = [
@@ -170,7 +163,6 @@ export const SIMPLE_AMM_ABI = [
     },
 ] as const;
 
-// ERC20 ABI for approve and balanceOf
 export const ERC20_ABI = [
     {
         type: 'function',

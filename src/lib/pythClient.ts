@@ -1,9 +1,5 @@
-/**
- * Pyth Network Client
- * Fetches price update data from Pyth Hermes API for on-chain oracle updates
- */
 
-const HERMES_URL = 'https://hermes.pyth.network'; // Pyth Hermes API endpoint
+const HERMES_URL = 'https://hermes.pyth.network'; 
 
 export interface PythPriceUpdate {
     binary: {
@@ -21,14 +17,9 @@ export interface PythPriceUpdate {
     }>;
 }
 
-/**
- * Fetch price update data from Pyth Hermes API
- * @param priceIds Array of Pyth price feed IDs (hex format with 0x prefix)
- * @returns Encoded price update data ready for contract consumption
- */
 export async function getPythPriceUpdate(priceIds: string[]): Promise<string[]> {
     try {
-        // Build query string with price IDs
+        
         const queryParams = priceIds.map(id => `ids[]=${id}`).join('&');
         const url = `${HERMES_URL}/v2/updates/price/latest?${queryParams}`;
 
@@ -46,7 +37,7 @@ export async function getPythPriceUpdate(priceIds: string[]): Promise<string[]> 
             throw new Error('No price update data received from Pyth');
         }
 
-        // Return hex-encoded price update blobs
+        
         const updates = data.binary.data.map(hexData => `0x${hexData}`);
 
         console.log('[Pyth] Successfully fetched', updates.length, 'price updates');
@@ -58,17 +49,10 @@ export async function getPythPriceUpdate(priceIds: string[]): Promise<string[]> 
     }
 }
 
-/**
- * Get update fee for Pyth price updates
- * Base Sepolia Pyth typically requires 1 wei per update
- * We add buffer for safety
- * @param updateCount Number of price feeds being updated
- * @returns Fee in wei as bigint
- */
 export function getPythUpdateFee(updateCount: number): bigint {
-    // TEMPORARY: Use large fee to ensure transaction succeeds
-    // Base Sepolia Pyth requires variable fees - using 0.001 ETH buffer
-    // After success, we can optimize this
-    const feePerUpdate = BigInt('1000000000000000'); // 0.001 ETH per update
+    
+    
+    
+    const feePerUpdate = BigInt('1000000000000000'); 
     return BigInt(updateCount) * feePerUpdate;
 }

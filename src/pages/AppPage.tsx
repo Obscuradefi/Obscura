@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAccount, useWriteContract } from 'wagmi';
 import { parseUnits } from 'viem';
+import { useSearchParams } from 'react-router-dom';
 import AppHeader from '../components/AppHeader';
 import AppTabs, { TabId } from '../components/AppTabs';
 import Footer from '../components/Footer';
@@ -12,103 +13,96 @@ import MarketsTab from '../features/markets/MarketsTab';
 import LiquidityTab from '../features/liquidity/LiquidityTab';
 import SwapAgent from '../features/swap/SwapAgent';
 import ShieldTab from '../features/shield/ShieldTab';
-import BackgroundGrid from '../components/BackgroundGrid';
 import { addActivity } from '../lib/fluxMock';
 import { useLiveActivitySync } from '../hooks/useLiveActivitySync';
 
 const RIALO_USDC_ADDRESS = '0x191798C747807ae164f2a28fA5DFb5145AcE4b6B';
 const MINT_ABI = [
-  { "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "mint", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+  { inputs: [{ internalType: 'address', name: 'to', type: 'address' }, { internalType: 'uint256', name: 'amount', type: 'uint256' }], name: 'mint', outputs: [], stateMutability: 'nonpayable', type: 'function' }
 ];
 
-const AppPage = () => {
-    // 🔗 Mount our live event listener for external agent sync
-    useLiveActivitySync();
+const VALID_TABS: TabId[] = ['shield', 'swap', 'stake', 'portfolio', 'markets', 'liquidity', 'bridge'];
 
-    const [activeTab, setActiveTab] = useState<TabId>('portfolio');
-    const { address, isConnected } = useAccount();
-    const { writeContract } = useWriteContract();
+const AppPage: React.FC = () => {
+  useLiveActivitySync();
 
-    const handleFaucetClick = () => {
-        if (!isConnected || !address) {
-            alert("Please connect your wallet first.");
-            return;
-        }
-        try {
-            writeContract({ 
-                address: RIALO_USDC_ADDRESS, 
-                abi: MINT_ABI, 
-                functionName: 'mint', 
-                args: [address, parseUnits('100', 18)] 
-            }, {
-                onSuccess: () => {
-                    addActivity({ type: 'faucet', description: 'Minted 100 USDO from faucet' });
-                },
-                onError: (e) => {
-                    console.error("Faucet minting failed", e);
-                }
-            });
-        } catch (err: any) {
-            console.error(err);
-        }
-    };
+  const [searchParams] = useSearchParams();
+  const initialTab = VALID_TABS.includes(searchParams.get('tab') as TabId)
+    ? (searchParams.get('tab') as TabId)
+    : 'portfolio';
 
-    const handleTabChange = (tab: TabId) => {
-        setActiveTab(tab);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const { address, isConnected } = useAccount();
+  const { writeContract } = useWriteContract();
 
-    const renderTabContent = () => {
-        switch (activeTab) {
-            case 'shield':
-                return <ShieldTab />;
-            case 'swap':
-                return <SwapTab />;
-            case 'stake':
-                return <StakeTab />;
-            case 'portfolio':
-                return <PortfolioTab onNavigate={handleTabChange} />;
-            case 'markets':
-                return <MarketsTab onSwapClick={() => handleTabChange('swap')} />;
-            case 'liquidity':
-                return <LiquidityTab />;
-            default:
-                return null;
-        }
-    };
+  const handleFaucetClick = () => {
+    if (!isConnected || !address) {
+      alert('Please connect your wallet first.');
+      return;
+    }
+    try {
+      writeContract({
+        address: RIALO_USDC_ADDRESS,
+        abi: MINT_ABI,
+        functionName: 'mint',
+        args: [address, parseUnits('100', 18)],
+      }, {
+        onSuccess: () => {
+          addActivity({ type: 'faucet', description: 'Minted 100 USDO from faucet' });
+        },
+        onError: (e) => {
+          console.error('Faucet minting failed', e);
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    return (
-        <div style={{ position: 'relative', minHeight: '100vh' }}>
-            <BackgroundGrid />
+  const handleTabChange = (tab: TabId) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-            <div style={{ position: 'relative', zIndex: 10 }}>
-                <AppHeader onFaucetClick={handleFaucetClick} />
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'shield': return <ShieldTab />;
+      case 'swap': return <SwapTab />;
+      case 'stake': return <StakeTab />;
+      case 'portfolio': return <PortfolioTab onNavigate={handleTabChange} />;
+      case 'markets': return <MarketsTab onSwapClick={() => handleTabChange('swap')} />;
+      case 'liquidity': return <LiquidityTab />;
+      default: return null;
+    }
+  };
 
-                <div style={{
-                    paddingTop: '120px',
-                    minHeight: '100vh',
-                }}>
-                    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px' }}>
-                        <AppTabs activeTab={activeTab} onTabChange={handleTabChange} />
+  return (
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
 
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            {renderTabContent()}
-                        </motion.div>
-                    </div>
-                    
-                    <Footer />
-                </div>
-            </div>
+      <div className="site-wrapper" style={{ position: 'relative', zIndex: 1 }}>
+        <AppHeader onFaucetClick={handleFaucetClick} />
 
-            {/* AI Swap Agent - floating overlay */}
-            <SwapAgent />
+        <div style={{ paddingTop: 80, minHeight: '100vh' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 24px 0' }}>
+            <AppTabs activeTab={activeTab} onTabChange={handleTabChange} />
+
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.28 }}
+            >
+              {renderTabContent()}
+            </motion.div>
+          </div>
+
+          <Footer />
         </div>
-    );
+      </div>
+
+      <SwapAgent />
+    </div>
+  );
 };
 
 export default AppPage;

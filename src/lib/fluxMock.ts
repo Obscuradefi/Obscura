@@ -1,4 +1,4 @@
-// FLUX Mock Logic for Swap functionality
+
 
 export type RoutingType = 'AMM' | 'Hybrid' | 'RFQ' | 'Custom RFQ';
 
@@ -24,7 +24,6 @@ export interface SwapActivity {
     amount?: number;
 }
 
-// Determine routing type based on USD amount
 export function determineRouting(usdAmount: number): RoutingType {
     if (usdAmount >= 10_000_000) return 'Custom RFQ';
     if (usdAmount >= 100_000) return 'RFQ';
@@ -32,18 +31,16 @@ export function determineRouting(usdAmount: number): RoutingType {
     return 'AMM';
 }
 
-// Get fee percentage based on routing
 export function getFeePercent(routing: RoutingType): number {
     switch (routing) {
         case 'AMM': return 0.01;
         case 'Hybrid': return 0.02;
-        case 'RFQ': return 0.03 + Math.random() * 0.02; // 0.03-0.05
+        case 'RFQ': return 0.03 + Math.random() * 0.02; 
         case 'Custom RFQ': return 0.05;
         default: return 0.01;
     }
 }
 
-// Generate mock quotes
 export function generateQuotes(
     fromAsset: string,
     toAsset: string,
@@ -56,7 +53,7 @@ export function generateQuotes(
     const quotes: SwapQuote[] = [];
 
     if (routing === 'AMM' || routing === 'Hybrid') {
-        // Single quote for AMM/Hybrid
+        
         const feePercent = getFeePercent(routing);
         const outputBeforeFee = (inputAmount * fromPrice) / toPrice;
         const fee = outputBeforeFee * feePercent;
@@ -73,11 +70,11 @@ export function generateQuotes(
             routing,
         });
     } else if (routing === 'RFQ') {
-        // 3 quote options for RFQ
+        
         const makers = ['Wintermute', 'Flow Traders', 'Galaxy Digital'];
 
         for (let i = 0; i < 3; i++) {
-            const feePercent = 0.03 + (i * 0.01); // 0.03, 0.04, 0.05
+            const feePercent = 0.03 + (i * 0.01); 
             const outputBeforeFee = (inputAmount * fromPrice) / toPrice;
             const fee = outputBeforeFee * feePercent;
             const outputAmount = outputBeforeFee - fee;
@@ -99,7 +96,6 @@ export function generateQuotes(
     return quotes;
 }
 
-// Activity history management (localStorage)
 const HISTORY_KEY = 'obscuraActivityHistory';
 
 export function getActivityHistory(): SwapActivity[] {
@@ -118,9 +114,9 @@ export function addActivity(activity: Omit<SwapActivity, 'id' | 'timestamp'>): v
         id: `activity-${Date.now()}`,
         timestamp: Date.now(),
     };
-    history.unshift(newActivity); // Add to beginning
+    history.unshift(newActivity); 
 
-    // Keep only last 100 activities
+    
     if (history.length > 100) {
         history.splice(100);
     }
@@ -132,7 +128,6 @@ export function clearActivityHistory(): void {
     localStorage.removeItem(HISTORY_KEY);
 }
 
-// Mock swap execution
 export function mockExecuteSwap(
     fromAsset: string,
     toAsset: string,
@@ -142,7 +137,7 @@ export function mockExecuteSwap(
 ): Promise<{ success: boolean; txHash: string }> {
     return new Promise((resolve) => {
         setTimeout(() => {
-            // Add to activity history
+            
             addActivity({
                 type: 'swap',
                 description: `Swap ${inputAmount.toFixed(4)} ${fromAsset} → ${outputAmount.toFixed(4)} ${toAsset}`,
@@ -155,6 +150,6 @@ export function mockExecuteSwap(
                 success: true,
                 txHash: `0x${Math.random().toString(16).substring(2, 66)}`,
             });
-        }, 1500); // Simulate network delay
+        }, 1500); 
     });
 }

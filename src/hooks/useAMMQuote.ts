@@ -2,15 +2,12 @@ import { useReadContract } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { SIMPLE_AMM_ABI, SIMPLE_AMM_ADDRESS } from '../config/dexConfig';
 
-/**
- * Hook to get AMM pricing for a swap
- */
 export function useAMMQuote(
     tokenInAddress: string | undefined,
     tokenOutAddress: string | undefined,
     amountIn: string
 ) {
-    // Get amount out from AMM
+    
     const { data: amountOutBN, refetch } = useReadContract({
         address: SIMPLE_AMM_ADDRESS,
         abi: SIMPLE_AMM_ABI,
@@ -28,7 +25,7 @@ export function useAMMQuote(
         },
     });
 
-    // Get reserves
+    
     const { data: reserveIn } = useReadContract({
         address: SIMPLE_AMM_ADDRESS,
         abi: SIMPLE_AMM_ABI,
@@ -48,7 +45,7 @@ export function useAMMQuote(
     const amountOut = amountOutBN ? parseFloat(formatUnits(amountOutBN, 18)) : 0;
     const hasLiquidity = reserveIn && reserveOut && reserveIn > 0n && reserveOut > 0n;
 
-    // Calculate price impact
+    
     let priceImpact = 0;
     if (hasLiquidity && amountIn && parseFloat(amountIn) > 0) {
         const amountInNum = parseFloat(amountIn);

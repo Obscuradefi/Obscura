@@ -21,7 +21,7 @@ const StakeTab = () => {
                 STAKE
             </h2>
             <p style={{ color: 'var(--text-dim)', marginBottom: '40px', fontFamily: 'JetBrains Mono', fontSize: '0.9rem' }}>
-        // YIELD VAULTS - COMING SOON
+        
             </p>
 
             <div style={{

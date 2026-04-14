@@ -11,9 +11,9 @@ import { config } from './wagmi';
 const queryClient = new QueryClient();
 
 const customTheme = darkTheme({
-  accentColor: '#00F0FF',
-  accentColorForeground: '#02020A',
-  borderRadius: 'small',
+  accentColor: '#3D9E4E',
+  accentColorForeground: '#FFFFFF',
+  borderRadius: 'medium',
   fontStack: 'system',
   overlayBlur: 'small',
 });
@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={customTheme} modalSize="wide" coolMode>
+        <RainbowKitProvider theme={customTheme} modalSize="wide">
           <AppRoutes />
         </RainbowKitProvider>
       </QueryClientProvider>

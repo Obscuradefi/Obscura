@@ -1,9 +1,9 @@
-// Mock market data for Markets tab
+
 
 export interface MarketData {
     symbol: string;
     price: number;
-    change24h: number;  // Percentage
+    change24h: number;  
     volume24h: number;
 }
 

@@ -13,7 +13,7 @@ const CaseStudies = () => {
   return (
     <div style={{ padding: '50px', background: 'var(--void)' }}>
       <h3 style={{ color: 'var(--text-dim)', marginBottom: '30px', fontFamily: 'JetBrains Mono' }}>
-        // MISSION ARCHIVE
+        
       </h3>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {levels.map((level) => (

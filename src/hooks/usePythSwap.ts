@@ -1,7 +1,3 @@
-/**
- * Pyth Oracle Swap Hook
- * Executes swaps with Pyth Network oracle pricing for accurate market rates
- */
 import { useState } from 'react';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
@@ -58,7 +54,7 @@ export function usePythSwap(): UsePythSwapResult {
         try {
             setError(null);
 
-            // Get Pyth price IDs
+            
             const priceIds = [
                 PYTH_PRICE_IDS[fromSymbol as keyof typeof PYTH_PRICE_IDS],
                 PYTH_PRICE_IDS[toSymbol as keyof typeof PYTH_PRICE_IDS],
@@ -70,7 +66,7 @@ export function usePythSwap(): UsePythSwapResult {
 
             console.log('[PythSwap] Fetching price updates...');
 
-            // Fetch Pyth price updates
+            
             const priceUpdate = await getPythPriceUpdate(priceIds);
             const updateFee = getPythUpdateFee(priceIds.length);
 
@@ -78,7 +74,7 @@ export function usePythSwap(): UsePythSwapResult {
 
             console.log('[PythSwap] Executing swapWithPyth() with oracle pricing...');
 
-            // Execute swap with Pyth oracle
+            
             writeContract({
                 address: SIMPLE_AMM_ADDRESS,
                 abi: SIMPLE_AMM_ABI,
@@ -90,7 +86,7 @@ export function usePythSwap(): UsePythSwapResult {
                     minAmountOut,
                     priceUpdate as readonly `0x${string}`[],
                 ],
-                value: updateFee, // Pay Pyth update fee (~2 wei)
+                value: updateFee, 
             });
         } catch (err) {
             const errorMsg = err instanceof Error ? err : new Error('Unknown error');

@@ -37,7 +37,7 @@ const SwapAgent: React.FC = () => {
     const inputRef = useRef<HTMLInputElement>(null);
     const { address, isConnected } = useAccount();
 
-    // Determine token + amount + spender for approval based on pending action
+    
     const approvalTokenAddress = pending
         ? pending.type === 'swap'
             ? getAsset(pending.intent.from)?.contractAddress
@@ -52,7 +52,7 @@ const SwapAgent: React.FC = () => {
 
     const approvalSpender = pending?.type === 'shield'
         ? (SHIELD_CONTRACT_ADDRESS as `0x${string}`)
-        : undefined; // defaults to SIMPLE_AMM_ADDRESS
+        : undefined; 
 
     const {
         needsApproval,
@@ -61,7 +61,7 @@ const SwapAgent: React.FC = () => {
         approveError,
     } = useTokenApproval(approvalTokenAddress, approvalAmount, approvalSpender);
 
-    // Swap execution
+    
     const {
         writeContract: executeSwap,
         data: swapTxHash,
@@ -70,7 +70,7 @@ const SwapAgent: React.FC = () => {
 
     const { isSuccess: isSwapConfirmed } = useWaitForTransactionReceipt({ hash: swapTxHash });
 
-    // Shield execution
+    
     const {
         writeContract: executeShield,
         data: shieldTxHash,
@@ -79,17 +79,17 @@ const SwapAgent: React.FC = () => {
 
     const { isSuccess: isShieldConfirmed } = useWaitForTransactionReceipt({ hash: shieldTxHash });
 
-    // ── helpers ──
+    
     const addMsg = (content: string, extra?: Partial<ChatMessage>) => {
         setMessages(prev => [...prev, { role: 'agent', content, ...extra }]);
     };
 
-    // Auto-scroll
+    
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // ── Effect: approval confirmed → fire swap / shield ──
+    
     useEffect(() => {
         if (!isApprovalConfirmed || step !== 'approving' || !pending) return;
 
@@ -129,7 +129,7 @@ const SwapAgent: React.FC = () => {
         }
     }, [isApprovalConfirmed]);
 
-    // ── Effect: approval error → reset ──
+    
     useEffect(() => {
         if (approveError && step === 'approving') {
             addMsg('❌ Approval rejected or failed. You can try again!');
@@ -137,7 +137,7 @@ const SwapAgent: React.FC = () => {
         }
     }, [approveError]);
 
-    // ── Effect: swap write error → reset ──
+    
     useEffect(() => {
         if (swapWriteError && step === 'swapping') {
             addMsg('❌ Swap rejected or failed. You can try again!');
@@ -145,7 +145,7 @@ const SwapAgent: React.FC = () => {
         }
     }, [swapWriteError]);
 
-    // ── Effect: shield write error → reset ──
+    
     useEffect(() => {
         if (shieldWriteError && step === 'swapping') {
             addMsg('❌ Transaction rejected or failed. You can try again!');
@@ -153,7 +153,7 @@ const SwapAgent: React.FC = () => {
         }
     }, [shieldWriteError]);
 
-    // ── Effect: swap confirmed on-chain ──
+    
     useEffect(() => {
         if (!isSwapConfirmed || !pending || pending.type !== 'swap') return;
         addMsg(
@@ -171,7 +171,7 @@ const SwapAgent: React.FC = () => {
         setStep('idle');
     }, [isSwapConfirmed]);
 
-    // ── Effect: shield confirmed on-chain ──
+    
     useEffect(() => {
         if (!isShieldConfirmed || !pending || pending.type !== 'shield') return;
         const verb = pending.action === 'shield' ? 'Shielded' : 'Unshielded';
@@ -189,18 +189,18 @@ const SwapAgent: React.FC = () => {
         setStep('idle');
     }, [isShieldConfirmed]);
 
-    // ── Confirm button handler ──
+    
     const handleConfirm = () => {
         if (!pending) return;
 
         if (needsApproval) {
-            // Step 1: approve first
+            
             setStep('approving');
             const tokenName = pending.type === 'swap' ? pending.intent.from : pending.token;
             addMsg(`⏳ Approving ${tokenName}... Please confirm in your wallet.`);
             handleApprove();
         } else {
-            // Already approved → execute directly
+            
             if (pending.type === 'swap') {
                 setStep('swapping');
                 addMsg('⏳ Executing swap... Please confirm in your wallet.');
@@ -238,7 +238,7 @@ const SwapAgent: React.FC = () => {
         }
     };
 
-    // ── Send message handler ──
+    
     const handleSend = async () => {
         const msg = input.trim();
         if (!msg) return;
@@ -314,25 +314,25 @@ const SwapAgent: React.FC = () => {
 
     return (
         <>
-            {/* Floating Button */}
+            {}
             <motion.button
                 onClick={() => { setIsOpen(!isOpen); setTimeout(() => inputRef.current?.focus(), 100); }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 style={{
                     position: 'fixed', bottom: '30px', right: '30px',
-                    width: '60px', height: '60px', borderRadius: '50%',
-                    background: 'linear-gradient(135deg, rgba(0,240,255,0.3), rgba(138,43,226,0.3))',
-                    border: '2px solid var(--neon-cyan)', color: 'white', fontSize: '1.5rem',
+                    width: '56px', height: '56px', borderRadius: '50%',
+                    background: 'rgba(61,158,78,0.15)',
+                    border: '2px solid var(--green-600)', color: 'white', fontSize: '1.4rem',
                     cursor: 'pointer', zIndex: 1000,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 0 25px rgba(0,240,255,0.4)', backdropFilter: 'blur(10px)',
+                    boxShadow: '0 0 20px rgba(61,158,78,0.3)', backdropFilter: 'blur(10px)',
                 }}
             >
                 {isOpen ? '✕' : '🤖'}
             </motion.button>
 
-            {/* Chat Panel */}
+            {}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -342,38 +342,38 @@ const SwapAgent: React.FC = () => {
                         transition={{ duration: 0.2 }}
                         style={{
                             position: 'fixed', bottom: '100px', right: '30px',
-                            width: '380px', maxHeight: '500px',
-                            background: 'rgba(10, 10, 20, 0.95)',
-                            border: '1px solid rgba(0, 240, 255, 0.3)',
+                            width: '360px', maxHeight: '480px',
+                            background: 'rgba(10,10,15,0.97)',
+                            border: '1px solid rgba(61,158,78,0.2)',
                             borderRadius: '16px', zIndex: 999,
                             display: 'flex', flexDirection: 'column', overflow: 'hidden',
-                            boxShadow: '0 0 40px rgba(0,240,255,0.15), 0 20px 60px rgba(0,0,0,0.5)',
+                            boxShadow: '0 0 30px rgba(61,158,78,0.1), 0 20px 60px rgba(0,0,0,0.5)',
                             backdropFilter: 'blur(20px)',
                         }}
                     >
-                        {/* Header */}
+                        {}
                         <div style={{
-                            padding: '15px 20px',
-                            borderBottom: '1px solid rgba(0,240,255,0.2)',
+                            padding: '14px 18px',
+                            borderBottom: '1px solid rgba(61,158,78,0.12)',
                             display: 'flex', alignItems: 'center', gap: '10px',
                         }}>
                             <span style={{ fontSize: '1.2rem' }}>🤖</span>
                             <div>
-                                <div style={{ fontFamily: 'JetBrains Mono', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--neon-cyan)' }}>
+                                <div style={{ fontFamily: 'Inter, system-ui', fontSize: '0.85rem', fontWeight: 700, color: 'var(--green-300)' }}>
                                     AI TRADING AGENT
                                 </div>
                                 <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>
-                                    Swap · Shield · Portfolio
+                                    Swap  Shield  Portfolio
                                 </div>
                             </div>
                             <div style={{
-                                marginLeft: 'auto', width: '8px', height: '8px', borderRadius: '50%',
-                                background: isConnected ? '#00FF88' : '#FF4444',
-                                boxShadow: isConnected ? '0 0 8px #00FF88' : '0 0 8px #FF4444',
+                                marginLeft: 'auto', width: '7px', height: '7px', borderRadius: '50%',
+                                background: isConnected ? 'var(--green-400)' : '#FF4444',
+                                boxShadow: isConnected ? '0 0 6px var(--green-400)' : '0 0 6px #FF4444',
                             }} />
                         </div>
 
-                        {/* Messages */}
+                        {}
                         <div className="agent-chat-messages" style={{
                             flex: 1, overflowY: 'auto', padding: '15px',
                             display: 'flex', flexDirection: 'column', gap: '12px',
@@ -382,8 +382,8 @@ const SwapAgent: React.FC = () => {
                             {messages.map((msg, i) => (
                                 <div key={i} style={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
                                     <div style={{
-                                        background: msg.role === 'user' ? 'rgba(0,240,255,0.15)' : 'rgba(138,43,226,0.1)',
-                                        border: `1px solid ${msg.role === 'user' ? 'rgba(0,240,255,0.3)' : 'rgba(138,43,226,0.2)'}`,
+                                        background: msg.role === 'user' ? 'rgba(61,158,78,0.1)' : 'rgba(157,78,221,0.08)',
+                                        border: `1px solid ${msg.role === 'user' ? 'rgba(61,158,78,0.25)' : 'rgba(157,78,221,0.15)'}`,
                                         borderRadius: msg.role === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
                                         padding: '10px 14px', fontSize: '0.85rem',
                                         color: 'rgba(255,255,255,0.9)', lineHeight: '1.5', whiteSpace: 'pre-wrap',
@@ -393,14 +393,14 @@ const SwapAgent: React.FC = () => {
                                             <div style={{ marginTop: '8px' }}>
                                                 <a href={`https://sepolia.basescan.org/tx/${msg.txHash}`}
                                                     target="_blank" rel="noopener noreferrer"
-                                                    style={{ color: 'var(--neon-cyan)', textDecoration: 'underline', fontSize: '0.8rem' }}>
+                                                    style={{ color: 'var(--green-400)', textDecoration: 'underline', fontSize: '0.78rem' }}>
                                                     🔗 View on BaseScan
                                                 </a>
                                             </div>
                                         )}
                                     </div>
 
-                                    {/* Confirm / Cancel buttons */}
+                                    {}
                                     {msg.showConfirm && pending && !isProcessing && step === 'idle' && (
                                         <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                                             <button onClick={handleConfirm}
@@ -442,9 +442,9 @@ const SwapAgent: React.FC = () => {
                             <div ref={messagesEndRef} />
                         </div>
 
-                        {/* Input */}
+                        {}
                         <div style={{
-                            padding: '12px 15px', borderTop: '1px solid rgba(0,240,255,0.2)',
+                            padding: '11px 15px', borderTop: '1px solid rgba(61,158,78,0.12)',
                             display: 'flex', gap: '10px',
                         }}>
                             <input ref={inputRef} type="text" value={input}
@@ -462,8 +462,8 @@ const SwapAgent: React.FC = () => {
                             <button onClick={handleSend}
                                 disabled={isLoading || isProcessing || !input.trim()}
                                 style={{
-                                    background: 'rgba(0,240,255,0.15)', border: '1px solid var(--neon-cyan)',
-                                    borderRadius: '8px', padding: '10px 14px', color: 'var(--neon-cyan)',
+                                    background: 'rgba(61,158,78,0.1)', border: '1px solid var(--green-600)',
+                                    borderRadius: '8px', padding: '9px 14px', color: 'var(--green-300)',
                                     cursor: 'pointer', fontSize: '1rem',
                                     opacity: isLoading || !input.trim() ? 0.5 : 1,
                                 }}>

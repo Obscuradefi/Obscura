@@ -13,7 +13,7 @@ const Hero = ({ onEnter, isBackground = false }) => {
     canvas.height = height;
 
     const particles = [];
-    const particleCount = 100; // Dikurangi sedikit agar performa lancar di background
+    const particleCount = 100; 
     const connectionDistance = 150;
     const mouse = { x: null, y: null };
 
@@ -87,7 +87,7 @@ const Hero = ({ onEnter, isBackground = false }) => {
     <div style={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, zIndex: 0 }} />
       
-      {/* Tampilkan Konten HANYA jika bukan background */}
+      {}
       {!isBackground && (
         <div style={{
           position: 'relative',
@@ -99,7 +99,7 @@ const Hero = ({ onEnter, isBackground = false }) => {
           alignItems: 'center',
           textAlign: 'center',
           padding: '0 20px',
-          background: 'radial-gradient(circle, rgba(2,2,10,0) 0%, rgba(2,2,10,0.8) 100%)' // Vignette halus
+          background: 'radial-gradient(circle, rgba(2,2,10,0) 0%, rgba(2,2,10,0.8) 100%)' 
         }}>
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}>
             <img 

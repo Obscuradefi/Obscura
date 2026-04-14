@@ -1,13 +1,12 @@
-// FLUX Asset Configuration
-// Update contractAddress and deployed:true when contracts are deployed
+
 
 export interface FluxAsset {
   symbol: string;
   name: string;
   decimals: number;
-  contractAddress?: string;  // Add when deployed
-  mockBalance?: number;       // Demo balance for UI
-  deployed: boolean;          // true = read from chain, false = use mock
+  contractAddress?: string;  
+  mockBalance?: number;       
+  deployed: boolean;          
   icon?: string;
 }
 
@@ -56,19 +55,16 @@ export const FLUX_ASSETS: FluxAsset[] = [
   },
 ];
 
-// All pairs are allowed — any token can swap to any other token
 export function isPairAllowed(fromSymbol: string, toSymbol: string): boolean {
   if (fromSymbol === toSymbol) return false;
   const validSymbols = FLUX_ASSETS.map(a => a.symbol);
   return validSymbols.includes(fromSymbol) && validSymbols.includes(toSymbol);
 }
 
-// Get allowed pairs for a given asset (all other tokens)
 export function getAllowedPairsFor(symbol: string): string[] {
   return FLUX_ASSETS.filter(a => a.symbol !== symbol).map(a => a.symbol);
 }
 
-// Get asset by symbol
 export function getAsset(symbol: string): FluxAsset | undefined {
   return FLUX_ASSETS.find(a => a.symbol === symbol);
 }

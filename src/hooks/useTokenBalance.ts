@@ -10,7 +10,7 @@ export function useTokenBalance(tokenAddress: string | undefined, userAddress: s
         args: userAddress ? [userAddress] : undefined,
         query: {
             enabled: !!tokenAddress && !!userAddress,
-            refetchInterval: 5000, // Auto-refresh every 5 seconds
+            refetchInterval: 5000, 
         },
     });
 

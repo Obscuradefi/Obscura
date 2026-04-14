@@ -1,5 +1,4 @@
-// Parse natural language intents: swap, shield, unshield, portfolio
-// Strategy: Try local regex FIRST (free), fallback to Jatevo API (cheap)
+
 
 import { FLUX_ASSETS } from '../data/fluxAssets';
 
@@ -26,7 +25,6 @@ export interface ParseResult {
 
 const VALID_TOKENS = FLUX_ASSETS.map(a => a.symbol.toUpperCase());
 
-// Token aliases for more flexible matching
 const TOKEN_ALIASES: Record<string, string> = {
     'USDC': 'USDO',
     'USD': 'USDO',
@@ -42,14 +40,11 @@ function resolveToken(raw: string): string | null {
     const upper = raw.toUpperCase();
     if (VALID_TOKENS.includes(upper)) return upper;
     if (TOKEN_ALIASES[upper]) return TOKEN_ALIASES[upper];
-    // Handle case-sensitive USDe
+    
     if (upper === 'USDE') return 'USDe';
     return null;
 }
 
-/**
- * Try to parse portfolio check
- */
 function parsePortfolio(message: string): ParseResult | null {
     const portfolioPatterns = [
         /(?:cek|check|lihat|show|view|tampilkan|display)\s*(?:portfolio|portofolio|saldo|balance|aset|asset|wallet)/i,
@@ -65,9 +60,6 @@ function parsePortfolio(message: string): ParseResult | null {
     return null;
 }
 
-/**
- * Try to parse shield/unshield intent
- */
 function parseShieldUnshield(message: string): ParseResult | null {
     const shieldPatterns = [
         /(?:shield|lindungi|protect|sembunyikan|hide)\s+([\d.]+)\s+(\w+)/i,
@@ -94,19 +86,16 @@ function parseShieldUnshield(message: string): ParseResult | null {
     return null;
 }
 
-/**
- * Step 1: Try to parse swap with regex (no API cost)
- */
 export function parseWithRegex(message: string): ParseResult {
-    // Check portfolio first
+    
     const portfolioResult = parsePortfolio(message);
     if (portfolioResult) return portfolioResult;
 
-    // Check shield/unshield
+    
     const shieldResult = parseShieldUnshield(message);
     if (shieldResult) return shieldResult;
 
-    // Swap patterns
+    
     const patterns = [
         /(?:swap|tukar|convert|exchange|beli|buy|jual|sell)\s+([\d.]+)\s+(\w+)\s+(?:to|ke|into|for|→|->|jadi)\s+(\w+)/i,
         /([\d.]+)\s+(\w+)\s+(?:to|ke|→|->)\s+(\w+)/i,
@@ -133,9 +122,6 @@ export function parseWithRegex(message: string): ParseResult {
     return { success: false, type: 'swap', error: 'Could not parse with regex', source: 'regex' };
 }
 
-/**
- * Step 2: Fallback to Jatevo AI API (costs credits, but cheap with glm-4.7)
- */
 export async function parseWithAI(message: string): Promise<ParseResult> {
     const apiKey = import.meta.env.VITE_JATEVO_API_KEY;
     if (!apiKey) {
@@ -220,14 +206,11 @@ Valid tokens: ${VALID_TOKENS.join(', ')}.`
     }
 }
 
-/**
- * Main parser: regex first, then AI fallback
- */
 export async function parseSwapIntent(message: string): Promise<ParseResult> {
-    // Step 1: Try regex (free)
+    
     const regexResult = parseWithRegex(message);
     if (regexResult.success) return regexResult;
 
-    // Step 2: Fallback to AI (cheap)
+    
     return parseWithAI(message);
 }

@@ -1,13 +1,5 @@
-/**
- * Price Oracle - Pyth Network Integration
- * Unified price fetching from Pyth Network for all assets
- */
 
 import { PYTH_PRICE_IDS } from '../config/priceFeeds';
-
-// ============================================
-// PYTH NETWORK (ALL ASSETS)
-// ============================================
 
 export async function fetchPythPrice(symbol: string): Promise<number> {
     try {
@@ -34,7 +26,7 @@ export async function fetchPythPrice(symbol: string): Promise<number> {
 
         const priceData = data.parsed[0].price;
 
-        // Convert from Pyth format: price * 10^expo
+        
         const price = Number(priceData.price) * Math.pow(10, priceData.expo);
 
         return price;
@@ -44,7 +36,6 @@ export async function fetchPythPrice(symbol: string): Promise<number> {
     }
 }
 
-// Fallback mock prices
 function getMockPrice(symbol: string): number {
     const mockPrices: Record<string, number> = {
         'AAPL': 278.12,
@@ -57,11 +48,7 @@ function getMockPrice(symbol: string): number {
     return mockPrices[symbol] || 1.0;
 }
 
-// ============================================
-// UNIFIED FETCH FUNCTION
-// ============================================
-
 export async function fetchAssetPrice(symbol: string): Promise<number> {
-    // All assets now use Pyth Network!
+    
     return fetchPythPrice(symbol);
 }

@@ -6,8 +6,6 @@ import { SIMPLE_AMM_ADDRESS, SIMPLE_AMM_ABI } from '../config/dexConfig';
 import { SHIELD_CONTRACT_ADDRESS, SHIELD_ABI } from '../config/shieldConfig';
 import { FLUX_ASSETS } from '../data/fluxAssets';
 
-// Keep track of processed transaction hashes in memory
-// to prevent duplicate additions on re-renders / re-polls
 const processedTxs = new Set<string>();
 
 const getTokenSymbol = (address: string) => {
@@ -21,7 +19,7 @@ const getTokenSymbol = (address: string) => {
 export function useLiveActivitySync() {
     const { address } = useAccount();
 
-    // Watch Swap
+    
     useWatchContractEvent({
         address: SIMPLE_AMM_ADDRESS,
         abi: SIMPLE_AMM_ABI,
@@ -31,7 +29,7 @@ export function useLiveActivitySync() {
             logs.forEach(log => {
                 if (!log.transactionHash || processedTxs.has(log.transactionHash)) return;
                 
-                // Only process events belonging to the currently connected user
+                
                 if (log.args.user?.toLowerCase() === address?.toLowerCase()) {
                     processedTxs.add(log.transactionHash);
                     
@@ -49,7 +47,7 @@ export function useLiveActivitySync() {
         },
     });
 
-    // Watch Shielded
+    
     useWatchContractEvent({
         address: SHIELD_CONTRACT_ADDRESS,
         abi: SHIELD_ABI,
@@ -74,7 +72,7 @@ export function useLiveActivitySync() {
         },
     });
 
-    // Watch Unshielded
+    
     useWatchContractEvent({
         address: SHIELD_CONTRACT_ADDRESS,
         abi: SHIELD_ABI,

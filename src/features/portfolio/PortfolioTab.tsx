@@ -23,7 +23,7 @@ const PortfolioTab = ({ onNavigate }: { onNavigate?: (tab: TabId) => void }) => 
     const [activities, setActivities] = useState<SwapActivity[]>([]);
     const [showEncrypted, setShowEncrypted] = useState(false);
 
-    // Read Public Balance (USDO)
+    
     const { data: balanceData, refetch: refetchPublic } = useReadContract({
         address: RIALO_USDC_ADDRESS,
         abi: MINT_ABI,
@@ -32,7 +32,7 @@ const PortfolioTab = ({ onNavigate }: { onNavigate?: (tab: TabId) => void }) => 
         query: { enabled: isConnected && !!address }
     });
 
-    // Read Private Balance (cUSDO) from Shield Contract
+    
     const { data: encryptedBalanceData, refetch: refetchPrivate } = useReadContract({
         address: SHIELD_CONTRACT_ADDRESS,
         abi: SHIELD_ABI,
@@ -87,204 +87,146 @@ const PortfolioTab = ({ onNavigate }: { onNavigate?: (tab: TabId) => void }) => 
 
     if (!isConnected) {
         return (
-            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '50px 20px', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                    className="cyber-card"
-                    style={{ padding: '60px', textAlign: 'center', maxWidth: '600px', width: '100%', border: '1px dashed var(--text-dim)' }}
-                >
-                    <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🔒</div>
-                    <h2 style={{ fontSize: '2rem', marginBottom: '15px', color: 'white' }}>ACCESS RESTRICTED</h2>
-                    <p style={{ marginBottom: '30px', color: 'var(--text-dim)', fontSize: '1.1rem' }}>
-                        CONNECT YOUR WALLET TO VIEW YOUR PORTFOLIO.
-                    </p>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <ConnectButton label="CONNECT TO BASE SEPOLIA" />
-                    </div>
+            <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                    style={{ background: 'rgba(13,13,18,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '56px 48px', textAlign: 'center', maxWidth: 480 }}>
+                    <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(61,158,78,0.08)', border: '1px solid rgba(61,158,78,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 22px', fontSize: '1.5rem' }}>🔒</div>
+                    <h2 style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#F0F0F0', marginBottom: 10 }}>Connect your wallet</h2>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: 26, fontSize: '0.88rem', lineHeight: 1.65 }}>Connect to Base Sepolia to view your portfolio.</p>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}><ConnectButton label="Connect wallet" /></div>
                 </motion.div>
             </div>
         );
     }
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px', display: 'flex', flexDirection: 'column', gap: '30px' }}
-        >
-            <h2 className="glow-text" style={{ fontSize: '2.5rem', marginBottom: '5px' }}>
-                PORTFOLIO
-            </h2>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+            style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-            {/* Portfolio Overview (Hero Section) */}
-            <div className="glass-panel" style={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'relative', zIndex: 10 }}>
-                    <h2 style={{ color: 'var(--text-dim)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px', fontFamily: 'Inter' }}>Total Balance</h2>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '15px' }}>
-                        <h1 className="mono" style={{ fontSize: '4.5rem', margin: 0, lineHeight: 1, color: 'var(--text-main)', textShadow: '0 0 30px rgba(0, 229, 255, 0.2)' }}>
-                            ${(parseFloat(formattedBalance) + encryptedBalanceVal).toFixed(2)}
-                        </h1>
-                        <div className="badge-green" style={{ marginBottom: '10px' }}>+5.24% (7d)</div>
+            <div>
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#F0F0F0', margin: '0 0 4px' }}>Portfolio</h2>
+            </div>
+
+            {}
+            <div style={{ background: 'rgba(13,13,18,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '32px 36px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 80% 50%, rgba(61,158,78,0.06) 0%, transparent 60%)', pointerEvents: 'none' }} />
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Total balance</div>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 14 }}>
+                    <div style={{ fontSize: '3.2rem', fontWeight: 800, letterSpacing: '-0.05em', color: '#F0F0F0', lineHeight: 1 }}>
+                        ${(parseFloat(formattedBalance) + encryptedBalanceVal).toFixed(2)}
                     </div>
+                    <div className="badge-green" style={{ marginBottom: 8, fontSize: '0.72rem' }}>+5.24% (7d)</div>
                 </div>
-                
-                {/* SVG Sparkline */}
-                <div className="sparkline-container" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '140px', zIndex: 1, pointerEvents: 'none', opacity: 0.8 }}>
-                    <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 1000 100">
+                <div style={{ marginTop: 18, height: 72, position: 'relative' }}>
+                    <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 1000 72">
                         <defs>
-                            <linearGradient id="sparkline-gradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="var(--neon-cyan)" stopOpacity="0.4" />
-                                <stop offset="100%" stopColor="var(--neon-cyan)" stopOpacity="0" />
+                            <linearGradient id="portfolio-grad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.3" />
+                                <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
                             </linearGradient>
                         </defs>
-                        <path className="sparkline-area" d="M0,100 L0,80 Q50,70 100,50 T300,60 T500,30 T700,50 Q850,20 1000,10 L1000,100 Z" />
-                        <path className="sparkline-path" d="M0,80 Q50,70 100,50 T300,60 T500,30 T700,50 Q850,20 1000,10" />
+                        <path d="M0,72 L0,58 Q100,48 200,38 T500,42 T700,22 Q900,10 1000,6 L1000,72 Z" fill="url(#portfolio-grad)" />
+                        <path d="M0,58 Q100,48 200,38 T500,42 T700,22 Q900,10 1000,6" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 4px rgba(61,158,78,0.5))' }} />
                     </svg>
                 </div>
             </div>
 
-            {/* Quick Actions Panel */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
-                <div onClick={() => onNavigate?.('swap')} className="cyber-card" style={{ padding: '24px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.3s' }}>
-                    <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(0, 229, 255, 0.1)', color: 'var(--neon-cyan)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: '1.5rem', boxShadow: 'inset 0 0 15px rgba(0,229,255,0.2)' }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+            {}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+                {[
+                    { tab: 'swap', label: 'Swap', desc: 'Exchange tokens instantly', color: 'var(--green-400)', bg: 'rgba(61,158,78,0.08)', border: 'rgba(61,158,78,0.18)' },
+                    { tab: 'stake', label: 'Stake', desc: 'Earn yield on privacy assets', color: 'var(--neon-purple)', bg: 'rgba(157,78,221,0.08)', border: 'rgba(157,78,221,0.18)' },
+                    { tab: 'bridge', label: 'Bridge', desc: 'Transfer across networks', color: 'var(--green-300)', bg: 'rgba(61,158,78,0.05)', border: 'rgba(61,158,78,0.12)' },
+                ].map(item => (
+                    <div key={item.tab} onClick={() => onNavigate?.(item.tab as any)}
+                        style={{ background: 'rgba(13,13,18,0.85)', border: `1px solid rgba(255,255,255,0.07)`, borderRadius: 14, padding: '22px 20px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.25s' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = item.border; e.currentTarget.style.background = item.bg; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.background = 'rgba(13,13,18,0.85)'; }}>
+                        <div style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.02em', color: item.color, marginBottom: 6 }}>{item.label}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>{item.desc}</div>
                     </div>
-                    <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Swap</h3>
-                    <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', margin: 0 }}>Exchange tokens instantly</p>
-                </div>
-                <div onClick={() => onNavigate?.('stake')} className="cyber-card" style={{ padding: '24px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.3s' }}>
-                    <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(157, 78, 221, 0.1)', color: 'var(--neon-purple)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: '1.5rem', boxShadow: 'inset 0 0 15px rgba(157, 78, 221,0.2)' }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    </div>
-                    <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Stake</h3>
-                    <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', margin: 0 }}>Earn yield on privacy assets</p>
-                </div>
-                <div onClick={() => onNavigate?.('bridge')} className="cyber-card" style={{ padding: '24px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.3s' }}>
-                    <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(0, 255, 102, 0.1)', color: 'var(--neon-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: '1.5rem', boxShadow: 'inset 0 0 15px rgba(0, 255, 102,0.2)' }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
-                    </div>
-                    <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Bridge</h3>
-                    <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', margin: 0 }}>Transfer across networks</p>
-                </div>
+                ))}
             </div>
 
-            {/* Asset Table */}
-            <div className="glass-panel" style={{ padding: '30px', marginTop: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-                    <h3 style={{ fontSize: '1.4rem', margin: 0 }}>Your Assets</h3>
-                    <button onClick={handleMint} disabled={isConfirming} className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.85rem' }}>
-                        {isConfirming ? 'Minting...' : '+ Faucet USDO'}
+            {}
+            <div style={{ background: 'rgba(13,13,18,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '24px 28px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 }}>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.02em', color: '#F0F0F0', margin: 0 }}>Your assets</h3>
+                    <button onClick={handleMint} disabled={isConfirming}
+                        style={{ background: 'rgba(61,158,78,0.08)', border: '1px solid rgba(61,158,78,0.2)', color: 'var(--green-300)', padding: '7px 18px', borderRadius: 8, fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', letterSpacing: '0.04em' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(61,158,78,0.18)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(61,158,78,0.08)'; }}>
+                        {isConfirming ? 'Minting...' : 'Faucet USDO'}
                     </button>
                 </div>
-
-                <div style={{ width: '100%', overflowX: 'auto' }}>
+                <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
-                            <tr style={{ borderBottom: '1px solid var(--glass-border)', color: 'var(--text-dim)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                <th style={{ padding: '16px 20px', fontWeight: 500 }}>Asset</th>
-                                <th style={{ padding: '16px 20px', fontWeight: 500 }}>Balance</th>
-                                <th style={{ padding: '16px 20px', fontWeight: 500 }}>Value (USD)</th>
-                                <th style={{ padding: '16px 20px', fontWeight: 500, textAlign: 'right' }}>24h Change</th>
+                            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                                {['Asset', 'Balance', 'Value (USD)', '24h'].map((h, i) => (
+                                    <th key={h} style={{ padding: '12px 18px', fontWeight: 600, fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.07em', textAlign: i === 3 ? 'right' : 'left' }}>{h}</th>
+                                ))}
                             </tr>
                         </thead>
                         <tbody>
                             {FLUX_ASSETS.map((asset) => (
-                                <AssetRow
-                                    key={asset.symbol}
-                                    asset={asset}
-                                    userAddress={address}
-                                />
+                                <AssetRow key={asset.symbol} asset={asset} userAddress={address} />
                             ))}
-
-                            {/* cUSDO Row */}
-                            <tr style={{ transition: 'background 0.2s' }}>
-                                <td style={{ padding: '20px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <div style={{ width: '42px', height: '42px', background: 'var(--neon-purple)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.2rem', color: 'white' }}>🔒</div>
+                            {}
+                            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}
+                                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.015)')}
+                                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                                <td style={{ padding: '16px 18px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                        <div style={{ width: 36, height: 36, background: 'rgba(157,78,221,0.15)', border: '1px solid rgba(157,78,221,0.3)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>🔒</div>
                                         <div>
-                                            <div style={{ fontWeight: 600, fontSize: '1.1rem', color: 'var(--neon-purple)' }}>cUSDO</div>
-                                            <div style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>Obscura Privacy Layer</div>
+                                            <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--neon-purple)' }}>cUSDO</div>
+                                            <div style={{ color: 'var(--text-dim)', fontSize: '0.76rem' }}>Obscura Privacy Layer</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td className="mono" style={{ padding: '20px', fontSize: '1.1rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <td style={{ padding: '16px 18px', fontSize: '0.95rem', fontWeight: 600, color: '#F0F0F0' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                         {showEncrypted ? encryptedBalanceVal.toFixed(2) : '••••••'}
-                                        <button onClick={() => setShowEncrypted(!showEncrypted)} style={{ background: 'transparent', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '1rem', padding: '4px' }}>
-                                            {showEncrypted ? (
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                                            ) : (
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-                                            )}
+                                        <button onClick={() => setShowEncrypted(!showEncrypted)} style={{ background: 'transparent', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', padding: 2, display: 'flex' }}>
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{showEncrypted ? <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></> : <><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></>}</svg>
                                         </button>
                                     </div>
                                 </td>
-                                <td className="mono" style={{ padding: '20px', fontSize: '1.1rem' }}>
-                                    ${showEncrypted ? encryptedBalanceVal.toFixed(2) : '••••••'}
-                                </td>
-                                <td style={{ padding: '20px', textAlign: 'right' }}>
-                                    <span className="badge-green">+0.05%</span>
-                                </td>
+                                <td style={{ padding: '16px 18px', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>${showEncrypted ? encryptedBalanceVal.toFixed(2) : '••••••'}</td>
+                                <td style={{ padding: '16px 18px', textAlign: 'right' }}><span className="badge-green">+0.05%</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            {/* Activity History */}
-            <div style={{ marginTop: '10px' }}>
-                <h3 style={{ color: 'var(--neon-cyan)', marginBottom: '20px', fontSize: '1.3rem' }}>
-                    ACTIVITY HISTORY
-                </h3>
-
+            {}
+            <div>
+                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--green-400)', marginBottom: 18, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Activity history</h3>
                 {activities.length === 0 ? (
-                    <div className="cyber-card" style={{ padding: '40px', textAlign: 'center' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '15px', opacity: 0.5 }}>📋</div>
-                        <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem' }}>
-                            No activity yet. Start trading to see your history.
-                        </p>
+                    <div style={{ background: 'rgba(13,13,18,0.7)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '40px', textAlign: 'center' }}>
+                        <div style={{ fontSize: '1.8rem', marginBottom: 12, opacity: 0.5 }}>📋</div>
+                        <p style={{ color: 'var(--text-dim)', fontSize: '0.88rem' }}>No activity yet. Start trading to see your history.</p>
                     </div>
                 ) : (
-                    <div className="cyber-card" style={{ padding: '30px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                            {activities.map(activity => (
-                                <div
-                                    key={activity.id}
-                                    style={{
-                                        padding: '15px',
-                                        background: 'rgba(255, 255, 255, 0.02)',
-                                        borderRadius: '12px',
-                                        border: '1px solid rgba(255, 255, 255, 0.05)',
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <div style={{ fontSize: '1.5rem' }}>
-                                            {getActivityIcon(activity.type)}
-                                        </div>
-                                        <div>
-                                            <div style={{ fontSize: '0.9rem', marginBottom: '3px' }}>
-                                                {activity.description}
-                                            </div>
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontFamily: 'JetBrains Mono' }}>
-                                                {formatTimestamp(activity.timestamp)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{
-                                        fontSize: '0.7rem',
-                                        padding: '4px 10px',
-                                        background: 'rgba(0, 240, 255, 0.1)',
-                                        color: 'var(--neon-cyan)',
-                                        borderRadius: '8px',
-                                        textTransform: 'uppercase',
-                                    }}>
-                                        {activity.type}
+                    <div style={{ background: 'rgba(13,13,18,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        {activities.map(activity => (
+                            <div key={activity.id} style={{ padding: '13px 16px', background: 'rgba(255,255,255,0.02)', borderRadius: 10, border: '1px solid rgba(255,255,255,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'background 0.2s' }}
+                                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+                                onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                    <div style={{ fontSize: '1.2rem' }}>{getActivityIcon(activity.type)}</div>
+                                    <div>
+                                        <div style={{ fontSize: '0.86rem', color: '#F0F0F0', marginBottom: 2 }}>{activity.description}</div>
+                                        <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{formatTimestamp(activity.timestamp)}</div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                                <div style={{ fontSize: '0.68rem', padding: '4px 10px', background: 'rgba(61,158,78,0.08)', color: 'var(--green-400)', borderRadius: 7, border: '1px solid rgba(61,158,78,0.15)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
+                                    {activity.type}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
@@ -292,68 +234,41 @@ const PortfolioTab = ({ onNavigate }: { onNavigate?: (tab: TabId) => void }) => 
     );
 };
 
-// Component for individual token row
 function AssetRow({ asset, userAddress }: { asset: typeof FLUX_ASSETS[0], userAddress: string | undefined }) {
     const { formattedBalance } = useTokenBalance(
         asset.deployed ? asset.contractAddress : undefined,
         userAddress
     );
-
     const balance = asset.deployed ? formattedBalance : (asset.mockBalance || 0);
     const isReal = asset.deployed;
-    
-    // Fallback Icon colors
     const colors = ['#2775CA', '#26A17B', '#8E8E93', '#FFC107', '#000000', '#F2A900'];
     const colorIndex = asset.symbol.charCodeAt(0) % colors.length;
 
     return (
-        <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}>
-            <td style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <div style={{ 
-                        width: '42px', 
-                        height: '42px', 
-                        background: colors[colorIndex], 
-                        borderRadius: '50%', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center', 
-                        fontWeight: 'bold', 
-                        fontSize: '1.2rem', 
-                        color: 'white' 
-                    }}>
+        <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.015)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+            <td style={{ padding: '14px 18px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 36, height: 36, background: colors[colorIndex], borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1rem', color: 'white', flexShrink: 0 }}>
                         {asset.symbol.charAt(0)}
                     </div>
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{asset.symbol}</div>
-                            {!isReal && (
-                                <span style={{
-                                    fontSize: '0.6rem',
-                                    padding: '2px 6px',
-                                    background: 'rgba(138, 43, 226, 0.2)',
-                                    color: 'var(--neon-purple)',
-                                    borderRadius: '6px',
-                                }}>
-                                    DEMO
-                                </span>
-                            )}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                            <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#F0F0F0' }}>{asset.symbol}</div>
+                            {!isReal && <span style={{ fontSize: '0.58rem', padding: '2px 6px', background: 'rgba(157,78,221,0.15)', color: 'var(--neon-purple)', borderRadius: 5, fontWeight: 600 }}>DEMO</span>}
                         </div>
-                        <div style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>{asset.name}</div>
+                        <div style={{ color: 'var(--text-dim)', fontSize: '0.76rem' }}>{asset.name}</div>
                     </div>
                 </div>
             </td>
-            <td className="mono" style={{ padding: '20px', fontSize: '1.1rem' }}>
-                {balance.toFixed(4)}
-            </td>
-            <td className="mono" style={{ padding: '20px', fontSize: '1.1rem', color: isReal ? 'white' : 'var(--text-dim)' }}>
+            <td style={{ padding: '14px 18px', fontSize: '0.95rem', fontWeight: 600, color: '#F0F0F0' }}>{balance.toFixed(4)}</td>
+            <td style={{ padding: '14px 18px', fontSize: '0.95rem', color: isReal ? '#F0F0F0' : 'var(--text-dim)' }}>
                 ${(balance * (asset.symbol === 'USDO' || asset.symbol === 'USDT' || asset.symbol === 'USDe' ? 1 : 1.5)).toFixed(2)}
             </td>
-            <td style={{ padding: '20px', textAlign: 'right' }}>
-                <span className="badge-green">+0.00%</span>
-            </td>
+            <td style={{ padding: '14px 18px', textAlign: 'right' }}><span className="badge-green">+0.00%</span></td>
         </tr>
     );
-};
+}
 
 export default PortfolioTab;

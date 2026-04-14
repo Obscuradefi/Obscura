@@ -6,7 +6,7 @@ const Architecture = () => {
     <div style={{ padding: '60px 0', background: 'transparent' }}>
       <div className="cyber-card" style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
         <h3 style={{ color: 'var(--neon-cyan)', marginBottom: '40px', fontFamily: 'JetBrains Mono', borderBottom: '1px solid #333', paddingBottom: '20px' }}>
-          // SYSTEM ARCHITECTURE
+          
         </h3>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>

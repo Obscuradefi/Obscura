@@ -1,682 +1,610 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Navbar from '../components/Navbar';
-import BackgroundGrid from '../components/BackgroundGrid';
 import Footer from '../components/Footer';
 
-/* ──────────────────────────────────────────────
-   Demo Modal Component
-   ────────────────────────────────────────────── */
-interface DemoModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    title: string;
-    children: React.ReactNode;
-    accentColor: string;
+function AnimatedCounter({ target, prefix = '', suffix = '', decimals = 0 }: {
+  target: number; prefix?: string; suffix?: string; decimals?: number;
+}) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+
+  useEffect(() => {
+    if (!inView) return;
+    const duration = 1600;
+    const steps = 60;
+    const increment = target / steps;
+    let current = 0;
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      current = Math.min(current + increment, target);
+      setValue(current);
+      if (step >= steps) clearInterval(timer);
+    }, duration / steps);
+    return () => clearInterval(timer);
+  }, [inView, target]);
+
+  const formatted = decimals > 0
+    ? value.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    : Math.round(value).toLocaleString();
+
+  return <span ref={ref}>{prefix}{formatted}{suffix}</span>;
 }
 
-const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose, title, children, accentColor }) => (
-    <AnimatePresence>
-        {isOpen && (
+const tickerItems = [
+  { label: 'Privacy shield active. Transaction concealed across 47 nodes.', color: 'var(--green-400)' },
+  { label: 'AI routing. Best execution path found in 12ms.', color: 'var(--green-300)' },
+  { label: 'Dark pool liquidity. 2.4% performance improvement captured.', color: 'var(--green-400)' },
+  { label: 'New market signal. Volatility decreasing across digital assets.', color: 'var(--green-300)' },
+  { label: 'Vault deposit confirmed. Encrypted balance updated.', color: 'var(--green-400)' },
+  { label: 'AMM reserve rebalanced. USDO pool optimized.', color: 'var(--green-300)' },
+  { label: 'RFQ quote matched. Zero slippage execution complete.', color: 'var(--green-400)' },
+];
+
+function LiveTicker() {
+  const doubled = [...tickerItems, ...tickerItems];
+  return (
+    <div className="activity-ticker">
+      <div className="activity-ticker-inner">
+        {doubled.map((item, i) => (
+          <div key={i} className="activity-ticker-item">
+            <div className="activity-ticker-dot" style={{ background: item.color }} />
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.77rem' }}>{item.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DashboardMockup() {
+  return (
+    <div
+      className="dashboard-card"
+      style={{ animation: 'float-card 6s ease-in-out infinite', width: '100%' }}
+    >
+      <div style={{ display: 'flex', height: 360 }}>
+        {}
+        <div className="dashboard-sidebar">
+          <div style={{ padding: '0 18px 16px', marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <img src="/assets/2.png" alt="Obscura Logo" style={{ height: '14px', width: 'auto', objectFit: 'contain' }} />
+              <span style={{ fontFamily: "'MADE Future X Header', sans-serif", fontSize: '0.65rem', color: 'var(--green-400)', letterSpacing: '0.5px' }}>OBSCURA</span>
+            </div>
+          </div>
+          {[
+            { label: 'Portfolio', active: true, icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+            { label: 'Swap', active: false, icon: 'M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4' },
+            { label: 'Vault', active: false, icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
+            { label: 'Markets', active: false, icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+            { label: 'Liquidity', active: false, icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+          ].map((item) => (
+            <div key={item.label} className={`sidebar-item${item.active ? ' active' : ''}`}>
+              <svg className="sidebar-icon" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+              </svg>
+              <span style={{ fontSize: '0.78rem' }}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {}
+        <div style={{ flex: 1, padding: 22, overflow: 'hidden' }}>
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+              Total Balance
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10 }}>
+              <span style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--text-main)' }}>
+                $345,340.56
+              </span>
+              <span className="badge-green" style={{ marginBottom: 4, fontSize: '0.68rem' }}>+11.2% All Time</span>
+            </div>
+          </div>
+
+          {}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 16 }}>
+            {[
+              { label: 'USDO', value: '$25,600' },
+              { label: 'GOLD', value: '$35,200' },
+              { label: 'Private', value: '$24,300' },
+            ].map((s) => (
+              <div key={s.label} style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid var(--glass-border)', borderRadius: 10, padding: '10px 12px' }}>
+                <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{s.label}</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+
+          {}
+          <div style={{ height: 72, position: 'relative', marginBottom: 14 }}>
+            <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 400 72">
+              <defs>
+                <linearGradient id="hero-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M0,72 L0,55 Q40,48 80,38 T160,42 T240,22 T320,32 Q360,14 400,8 L400,72 Z"
+                fill="url(#hero-grad)"
+              />
+              <path
+                d="M0,55 Q40,48 80,38 T160,42 T240,22 T320,32 Q360,14 400,8"
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                style={{ filter: 'drop-shadow(0 0 6px rgba(61,158,78,0.5))' }}
+              />
+            </svg>
+          </div>
+
+          {}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'rgba(61,158,78,0.06)', border: '1px solid rgba(61,158,78,0.15)', borderRadius: 8 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent-light)', boxShadow: '0 0 6px var(--accent-light)', animation: 'pulse-dot 2s infinite', flexShrink: 0 }} />
+            <span style={{ fontSize: '0.72rem', color: 'var(--green-300)' }}>Privacy shield active. All transactions encrypted.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const Landing: React.FC = () => {
+  const navigate = useNavigate();
+
+  const goToApp = () => navigate('/app');
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <Navbar />
+
+      {}
+      <div className="site-wrapper">
+
+        {}
+        <section className="hero-section">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={onClose}
-                style={{
-                    position: 'fixed', inset: 0, zIndex: 2000,
-                    background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    padding: '20px',
-                }}
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
             >
-                <motion.div
-                    initial={{ scale: 0.9, y: 30 }}
-                    animate={{ scale: 1, y: 0 }}
-                    exit={{ scale: 0.9, y: 30 }}
-                    onClick={(e) => e.stopPropagation()}
-                    style={{
-                        background: 'rgba(10, 10, 25, 0.95)',
-                        border: `1px solid ${accentColor}40`,
-                        borderRadius: '20px',
-                        maxWidth: '700px', width: '100%', maxHeight: '85vh',
-                        overflowY: 'auto', padding: '40px',
-                        boxShadow: `0 0 60px ${accentColor}20`,
-                        scrollbarWidth: 'none',
-                    }}
-                    className="agent-chat-messages"
+              <div className="hero-badge">
+                <div className="hero-badge-dot" />
+                <span className="hero-badge-text">Privacy First DeFi Protocol</span>
+              </div>
+
+              <h1 className="hero-title">
+                Privacy<br />
+                <span>Reimagined</span>
+              </h1>
+
+              <p className="hero-subtitle">
+                A new standard in private onchain trading. Take full control of your assets with shielded transactions, AI powered routing, and encrypted vaults in real time.
+              </p>
+
+              <div className="hero-cta-row">
+                <button className="btn-primary" onClick={goToApp} style={{ fontSize: '0.7rem', paddingInline: 28 }}>
+                  Launch app
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                  style={{ fontSize: '0.7rem' }}
                 >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                        <h3 style={{ color: accentColor, fontFamily: 'JetBrains Mono', fontSize: '1.3rem', margin: 0 }}>{title}</h3>
-                        <button onClick={onClose} style={{
-                            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                            color: '#888', width: '36px', height: '36px', borderRadius: '50%',
-                            cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>✕</button>
-                    </div>
-                    {children}
-                </motion.div>
-            </motion.div>
-        )}
-    </AnimatePresence>
-);
-
-/* ──────────────────────────────────────────────
-   AMM Demo Content
-   ────────────────────────────────────────────── */
-const AMMDemoContent: React.FC = () => {
-    const [inputAmt, setInputAmt] = useState(10);
-    const reserveA = 1000;
-    const reserveB = 5000;
-    const k = reserveA * reserveB;
-    const newReserveA = reserveA + inputAmt;
-    const newReserveB = k / newReserveA;
-    const output = reserveB - newReserveB;
-    const priceImpact = ((inputAmt / reserveA) * 100).toFixed(2);
-
-    return (
-        <div>
-            <p style={{ color: 'var(--text-dim)', lineHeight: 1.7, marginBottom: '25px' }}>
-                The Automated Market Maker (AMM) uses the <strong style={{ color: 'var(--neon-cyan)' }}>constant product formula x × y = k</strong> to determine swap prices.
-                Unlike orderbooks, AMMs provide instant liquidity at algorithmically determined prices.
-            </p>
-
-            {/* Visual Pool */}
-            <div style={{ background: 'rgba(0,240,255,0.05)', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '16px', padding: '25px', marginBottom: '25px' }}>
-                <div style={{ textAlign: 'center', marginBottom: '20px', fontFamily: 'JetBrains Mono', fontSize: '0.85rem', color: 'var(--text-dim)' }}>
-                    LIQUIDITY POOL — USDO / GOLD
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '30px', marginBottom: '20px' }}>
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '5px' }}>💵</div>
-                        <div style={{ fontFamily: 'JetBrains Mono', color: 'var(--neon-cyan)', fontSize: '1.2rem' }}>{newReserveA.toFixed(0)}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>USDO</div>
-                    </div>
-                    <div style={{ fontSize: '1.5rem', color: 'var(--text-dim)' }}>×</div>
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '5px' }}>🪙</div>
-                        <div style={{ fontFamily: 'JetBrains Mono', color: '#FFD700', fontSize: '1.2rem' }}>{newReserveB.toFixed(2)}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>GOLD</div>
-                    </div>
-                    <div style={{ fontSize: '1.5rem', color: 'var(--text-dim)' }}>=</div>
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontFamily: 'JetBrains Mono', color: 'var(--neon-purple)', fontSize: '1.2rem' }}>{k.toLocaleString()}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>k (constant)</div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Interactive Slider */}
-            <div style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>Swap Amount (USDO)</span>
-                    <span style={{ color: 'var(--neon-cyan)', fontFamily: 'JetBrains Mono' }}>{inputAmt}</span>
-                </div>
-                <input type="range" min="1" max="500" value={inputAmt} onChange={(e) => setInputAmt(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: 'var(--neon-cyan)' }} />
-            </div>
-
-            {/* Results */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div style={{ background: 'rgba(0,255,136,0.05)', border: '1px solid rgba(0,255,136,0.2)', borderRadius: '10px', padding: '15px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#00FF88', marginBottom: '5px' }}>YOU RECEIVE</div>
-                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: '1.2rem', color: 'white' }}>{output.toFixed(4)} GOLD</div>
-                </div>
-                <div style={{ background: 'rgba(255,68,68,0.05)', border: '1px solid rgba(255,68,68,0.2)', borderRadius: '10px', padding: '15px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#FF4444', marginBottom: '5px' }}>PRICE IMPACT</div>
-                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: '1.2rem', color: Number(priceImpact) > 5 ? '#FF4444' : 'white' }}>{priceImpact}%</div>
-                </div>
-            </div>
-
-            <div style={{ marginTop: '25px', padding: '15px', background: 'rgba(138,43,226,0.08)', borderRadius: '10px', fontSize: '0.85rem', color: 'var(--text-dim)', lineHeight: 1.7 }}>
-                💡 <strong style={{ color: 'var(--neon-purple)' }}>Rialo Infrastructure:</strong> On Rialo mainnet, the AMM pool is natively integrated with
-                reactive transactions — allowing automatic rebalancing, LP fee compounding, and liquidation protection without external keepers.
-            </div>
-        </div>
-    );
-};
-
-/* ──────────────────────────────────────────────
-   RFQ Demo Content
-   ────────────────────────────────────────────── */
-const RFQDemoContent: React.FC = () => {
-    const [step, setStep] = useState(0);
-    const steps = [
-        { label: 'User requests quote', icon: '📤', detail: 'User wants to swap 100 USDO → AAPL' },
-        { label: 'Market makers respond', icon: '🏦', detail: '3 market makers compete: Maker A (19.8), Maker B (19.95), Maker C (19.7)' },
-        { label: 'Best price selected', icon: '✅', detail: 'Maker B wins: 19.95 AAPL (best rate, 0% slippage)' },
-        { label: 'Atomic execution', icon: '⚡', detail: 'Swap settles on-chain in single transaction — no MEV, no frontrunning' },
-    ];
-
-    return (
-        <div>
-            <p style={{ color: 'var(--text-dim)', lineHeight: 1.7, marginBottom: '25px' }}>
-                <strong style={{ color: 'var(--neon-purple)' }}>Request for Quote (RFQ)</strong> lets professional market makers compete to give you
-                the best price. Unlike AMMs, there's <strong style={{ color: 'white' }}>zero slippage</strong> and <strong style={{ color: 'white' }}>zero price impact</strong>.
-            </p>
-
-            {/* Step Flow */}
-            <div style={{ position: 'relative', marginBottom: '30px' }}>
-                {steps.map((s, i) => (
-                    <motion.div key={i}
-                        initial={{ opacity: 0.4 }}
-                        animate={{ opacity: step >= i ? 1 : 0.4 }}
-                        style={{
-                            display: 'flex', alignItems: 'flex-start', gap: '15px', marginBottom: '20px',
-                            cursor: 'pointer', padding: '15px',
-                            background: step === i ? 'rgba(138,43,226,0.1)' : 'transparent',
-                            border: step === i ? '1px solid rgba(138,43,226,0.3)' : '1px solid transparent',
-                            borderRadius: '12px', transition: 'all 0.3s',
-                        }}
-                        onClick={() => setStep(i)}
-                    >
-                        <div style={{
-                            width: '40px', height: '40px', borderRadius: '50%',
-                            background: step >= i ? 'rgba(138,43,226,0.2)' : 'rgba(255,255,255,0.05)',
-                            border: `1px solid ${step >= i ? 'var(--neon-purple)' : 'rgba(255,255,255,0.1)'}`,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '1.2rem', flexShrink: 0,
-                        }}>{s.icon}</div>
-                        <div>
-                            <div style={{ fontFamily: 'JetBrains Mono', fontSize: '0.9rem', color: step >= i ? 'white' : 'var(--text-dim)', marginBottom: '4px' }}>{s.label}</div>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>{s.detail}</div>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
-                <button onClick={() => setStep(Math.max(0, step - 1))}
-                    style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'var(--text-dim)', cursor: 'pointer', fontFamily: 'JetBrains Mono' }}>
-                    ← PREV
+                  Explore features
                 </button>
-                <button onClick={() => setStep(Math.min(3, step + 1))}
-                    style={{ flex: 1, padding: '10px', background: 'rgba(138,43,226,0.15)', border: '1px solid var(--neon-purple)', borderRadius: '8px', color: 'var(--neon-purple)', cursor: 'pointer', fontFamily: 'JetBrains Mono' }}>
-                    NEXT →
-                </button>
-            </div>
+              </div>
 
-            {/* Comparison mini */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-                <div style={{ background: 'rgba(255,68,68,0.05)', border: '1px solid rgba(255,68,68,0.2)', borderRadius: '10px', padding: '15px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#FF4444', marginBottom: '5px' }}>AMM SLIPPAGE</div>
-                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: '1.1rem', color: '#FF4444' }}>~2.5%</div>
-                </div>
-                <div style={{ background: 'rgba(0,255,136,0.05)', border: '1px solid rgba(0,255,136,0.2)', borderRadius: '10px', padding: '15px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#00FF88', marginBottom: '5px' }}>RFQ SLIPPAGE</div>
-                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: '1.1rem', color: '#00FF88' }}>0%</div>
-                </div>
-            </div>
-
-            <div style={{ padding: '15px', background: 'rgba(138,43,226,0.08)', borderRadius: '10px', fontSize: '0.85rem', color: 'var(--text-dim)', lineHeight: 1.7 }}>
-                💡 <strong style={{ color: 'var(--neon-purple)' }}>Rialo Infrastructure:</strong> Rialo's reactive transactions enable RFQ makers to automatically
-                respond to quote requests on-chain. Combined with the AMM, our hybrid router always finds the best execution path.
-            </div>
-        </div>
-    );
-};
-
-/* ──────────────────────────────────────────────
-   AI Agent Demo Content
-   ────────────────────────────────────────────── */
-const AIAgentDemoContent: React.FC = () => {
-    const [chatStep, setChatStep] = useState(0);
-    const chatFlow = [
-        { role: 'user' as const, text: 'swap 5 USDO to GOLD' },
-        { role: 'agent' as const, text: '📋 Swap Preview (parsed via regex)\n\n• From: 5 USDO\n• To: GOLD\n• Router: AMM (SimpleAMM)\n\nReady to execute?' },
-        { role: 'user' as const, text: '✓ CONFIRM' },
-        { role: 'agent' as const, text: '⏳ Approving USDO... Confirm in wallet.' },
-        { role: 'agent' as const, text: '✅ Swap complete! 5 USDO → GOLD\n\n🔗 View on BaseScan' },
-    ];
-    const visibleMessages = chatFlow.slice(0, chatStep + 1);
-
-    return (
-        <div>
-            <p style={{ color: 'var(--text-dim)', lineHeight: 1.7, marginBottom: '25px' }}>
-                Our <strong style={{ color: 'var(--neon-cyan)' }}>AI Swap Agent</strong> lets you trade using natural language.
-                Just describe what you want — the AI parses your intent, shows a preview, and executes via your wallet.
-            </p>
-
-            {/* Simulated Chat */}
-            <div style={{
-                background: 'rgba(10,10,20,0.9)', border: '1px solid rgba(0,240,255,0.2)',
-                borderRadius: '16px', padding: '20px', marginBottom: '20px',
-                minHeight: '250px',
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,240,255,0.1)' }}>
-                    <span>🤖</span>
-                    <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.85rem', color: 'var(--neon-cyan)' }}>AI SWAP AGENT</span>
-                    <div style={{ marginLeft: 'auto', width: '8px', height: '8px', borderRadius: '50%', background: '#00FF88', boxShadow: '0 0 8px #00FF88' }} />
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {visibleMessages.map((msg, i) => (
-                        <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                            style={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '80%' }}>
-                            <div style={{
-                                background: msg.role === 'user' ? 'rgba(0,240,255,0.15)' : 'rgba(138,43,226,0.1)',
-                                border: `1px solid ${msg.role === 'user' ? 'rgba(0,240,255,0.3)' : 'rgba(138,43,226,0.2)'}`,
-                                borderRadius: msg.role === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
-                                padding: '10px 14px', fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)',
-                                whiteSpace: 'pre-wrap', lineHeight: 1.5,
-                            }}>{msg.text}</div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
-                <button onClick={() => setChatStep(Math.max(0, chatStep - 1))}
-                    style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'var(--text-dim)', cursor: 'pointer', fontFamily: 'JetBrains Mono' }}>
-                    ← PREV
-                </button>
-                <button onClick={() => setChatStep(Math.min(chatFlow.length - 1, chatStep + 1))}
-                    style={{ flex: 1, padding: '10px', background: 'rgba(0,240,255,0.15)', border: '1px solid var(--neon-cyan)', borderRadius: '8px', color: 'var(--neon-cyan)', cursor: 'pointer', fontFamily: 'JetBrains Mono' }}>
-                    NEXT →
-                </button>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+              {}
+              <div style={{ display: 'flex', gap: 28, marginTop: 44 }}>
                 {[
-                    { label: 'PARSING', value: 'Regex + AI', color: 'var(--neon-cyan)' },
-                    { label: 'MODEL', value: 'GLM-4.7', color: 'var(--neon-purple)' },
-                    { label: 'COST', value: '~$0.001', color: '#00FF88' },
-                ].map(s => (
-                    <div key={s.label} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '12px', textAlign: 'center' }}>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: '4px' }}>{s.label}</div>
-                        <div style={{ fontFamily: 'JetBrains Mono', fontSize: '0.85rem', color: s.color }}>{s.value}</div>
+                  { label: 'Assets Supported', value: 6 },
+                  { label: 'Routing Options', value: 3 },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--text-main)' }}>
+                      <AnimatedCounter target={value} />
                     </div>
+                    <div style={{ fontSize: '0.62rem', color: 'var(--text-dim)', marginTop: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
+                  </div>
                 ))}
+                <div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--green-300)' }}>Live</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-dim)', marginTop: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Base Sepolia</div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+            >
+              <DashboardMockup />
+            </motion.div>
+          </div>
+        </section>
+
+        {}
+        <LiveTicker />
+
+        {}
+        <section id="features" style={{ padding: '90px 40px' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="section-label green">Core capabilities</div>
+            <h2 className="section-title" style={{ maxWidth: 580 }}>
+              Clarity and control for every part of your portfolio
+            </h2>
+            <p className="section-desc" style={{ marginBottom: 56 }}>
+              A clear, structured view of your capital. From asset allocation to performance insights and privacy controls.
+            </p>
+          </motion.div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+            {[
+              {
+                num: '01',
+                title: 'Total asset visibility',
+                desc: 'Understand your positions. Clearly structured in one unified system. Get a complete view of your portfolio across all assets.',
+                preview: (
+                  <div style={{ background: 'rgba(13,13,18,0.8)', border: '1px solid var(--glass-border)', borderRadius: 14, padding: '18px 20px' }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Portfolio Overview</div>
+                    {['USDO', 'GOLD', 'AAPL', 'cUSDO'].map((sym, i) => (
+                      <div key={sym} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: i < 3 ? '1px solid var(--glass-border-light)' : 'none' }}>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-main)' }}>{sym}</span>
+                        <span className="badge-green" style={{ fontSize: '0.62rem' }}>+{(Math.random() * 5 + 0.5).toFixed(1)}%</span>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              },
+              {
+                num: '02',
+                title: 'Precision performance tracking',
+                desc: 'Advanced analytics to monitor growth, routing efficiency, and privacy impact. Analyze performance with deeper insights.',
+                preview: (
+                  <div style={{ background: 'rgba(13,13,18,0.8)', border: '1px solid var(--glass-border)', borderRadius: 14, padding: '18px 20px' }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Last 7 Days</div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--green-300)', marginBottom: 12 }}>27.4%</div>
+                    {[
+                      { label: 'Privacy impact', val: 'Encrypted', color: 'var(--green-400)' },
+                      { label: 'Routing efficiency', val: '+8.2%', color: 'var(--green-300)' },
+                      { label: 'Slippage saved', val: '2.1%', color: 'var(--green-400)' },
+                    ].map((r) => (
+                      <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', marginBottom: 6 }}>
+                        <span style={{ color: 'var(--text-dim)' }}>{r.label}</span>
+                        <span style={{ color: r.color, fontWeight: 600 }}>{r.val}</span>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              },
+              {
+                num: '03',
+                title: 'Global allocation intelligence',
+                desc: 'Realtime asset class distribution and opportunity mapping. Track flows and emerging opportunities in one structured view.',
+                preview: (
+                  <div style={{ background: 'rgba(13,13,18,0.8)', border: '1px solid var(--glass-border)', borderRadius: 14, padding: '18px 20px' }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Capital Allocated</div>
+                    <div style={{ fontSize: '1.3rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--text-main)', marginBottom: 10 }}>$52,473,178</div>
+                    <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+                      {[60, 25, 15].map((w, i) => (
+                        <div key={i} style={{ height: 4, flex: w, borderRadius: 2, background: i === 0 ? 'var(--accent)' : i === 1 ? 'var(--green-600)' : 'var(--green-800)' }} />
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {['Stablecoin', 'Commodity', 'Equity'].map((l, i) => (
+                        <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: i === 0 ? 'var(--accent)' : i === 1 ? 'var(--green-600)' : 'var(--green-800)' }} />
+                          <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)' }}>{l}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ),
+              },
+            ].map((feat, idx) => (
+              <motion.div
+                key={feat.num}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.12 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
+              >
+                <div>
+                  <div className="feature-number">{feat.num}</div>
+                  <div className="feature-title">{feat.title}</div>
+                  <div className="feature-desc">{feat.desc}</div>
+                </div>
+                {feat.preview}
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {}
+        <section style={{ padding: '0 40px 90px' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="signal-card">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+                <div>
+                  <div className="section-label green" style={{ marginBottom: 16 }}>AI Intelligence</div>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.035em', color: 'var(--text-main)', marginBottom: 14, lineHeight: 1.15 }}>
+                    Privacy intelligence. Powered by AI.
+                  </h2>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--green-200)', lineHeight: 1.7, marginBottom: 24, opacity: 0.8 }}>
+                    The Obscura AI agent monitors market conditions, routes trades through the optimal path, and manages your vault exposure in complete privacy.
+                  </p>
+                  <button className="nav-launch-btn" onClick={goToApp} style={{ fontSize: '0.85rem' }}>
+                    Try AI trading
+                  </button>
+                </div>
+
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+                    <div className="signal-strength-ring">
+                      <span className="signal-strength-inner">87</span>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--green-400)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Signal strength</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>High confidence routing</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--green-300)', marginTop: 2 }}>Rebalance recommended</div>
+                    </div>
+                  </div>
+
+                  {[
+                    { badge: 'alert', text: 'Volatility detected in emerging markets. Reducing exposure recommended.', type: 'warning' },
+                    { badge: 'info', text: 'AI routing applied. RFQ path selected, saving 1.8% on last swap.', type: 'info' },
+                    { badge: 'info', text: 'Vault rebalance complete. Privacy shield refreshed.', type: 'info' },
+                  ].map((item, i) => (
+                    <div key={i} className="signal-alert">
+                      <span className={`signal-alert-badge ${item.type}`}>{item.badge}</span>
+                      <span className="signal-alert-text">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {}
+        <section style={{ padding: '0 40px 90px' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            style={{ textAlign: 'center', marginBottom: 52 }}
+          >
+            <div className="section-label" style={{ marginBottom: 12 }}>Core capabilities</div>
+            <h2 className="section-title">Powering every layer<br />of your privacy stack</h2>
+          </motion.div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 16 }}>
+            {['AMM Engine', 'RFQ Network', 'AI Routing'].map((node, i) => (
+              <motion.div
+                key={node}
+                className="arch-node"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <span className="arch-node-label">{node}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            className="arch-center-pill"
+            style={{ textAlign: 'center', marginBottom: 16 }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
+            <div style={{ fontSize: '0.68rem', color: 'var(--green-400)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Obscura Core</div>
+            <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>Unified privacy layer</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--green-300)', marginTop: 4 }}>AI powered orchestration. Central intelligence layer.</div>
+          </motion.div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            {['Encrypted Vaults', 'Dark Pool Liquidity', 'Shield Protocol'].map((node, i) => (
+              <motion.div
+                key={node}
+                className="arch-node"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <span className="arch-node-label">{node}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 40 }}>
+            {[
+              { title: 'Unified capital system', desc: 'All in one execution protocol connecting AMM pools, RFQ makers, and encrypted vaults in a single interface.' },
+              { title: 'Cross market intelligence', desc: 'Analysis and capital routing across privacy pools, public markets, and dark liquidity. All in one system.' },
+              { title: 'Seamless execution', desc: 'Smart routing finds the best path across every connected environment with zero slippage and MEV protection.' },
+            ].map((cap, i) => (
+              <motion.div
+                key={cap.title}
+                className="obscura-card"
+                style={{ padding: '24px 22px' }}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--green-400)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{cap.title}</div>
+                <div style={{ fontSize: '0.83rem', color: 'var(--text-secondary)', lineHeight: 1.65 }}>{cap.desc}</div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {}
+        <section style={{ padding: '0 40px 90px', textAlign: 'center' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ marginBottom: 48 }}
+          >
+            <div className="section-label" style={{ marginBottom: 10 }}>Integrations</div>
+            <h2 className="section-title">Seamlessly connected<br />to your DeFi ecosystem</h2>
+            <p className="section-desc" style={{ margin: '14px auto 0', textAlign: 'center' }}>
+              Realtime sync. Zero fragmentation. Connect your wallet, onchain assets, and liquidity positions. All synchronized in one system.
+            </p>
+          </motion.div>
+
+          {}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 28 }}>
+            {[
+              { name: 'Base', color: '#0052FF' },
+              { name: 'Uniswap', color: '#FF007A' },
+              { name: 'Pyth Network', color: '#E6C979' },
+              { name: 'RainbowKit', color: '#7B68EE' },
+              { name: 'Wagmi', color: '#4B9BFF' },
+              { name: 'Viem', color: '#FCA5A5' },
+              { name: 'WalletConnect', color: '#3B99FC' },
+              { name: 'REX Protocol', color: 'var(--green-400)' },
+            ].map((p) => (
+              <motion.div
+                key={p.name}
+                className="integration-badge"
+                whileHover={{ scale: 1.04 }}
+              >
+                <div className="integration-dot" style={{ background: p.color }} />
+                <span>{p.name}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <div
+            className="arch-center-pill"
+            style={{ display: 'inline-block', padding: '10px 28px' }}
+          >
+            <span style={{ fontSize: '0.82rem', color: 'var(--green-200)', fontWeight: 600 }}>
+              Core. Best in class DeFi composability.
+            </span>
+          </div>
+        </section>
+
+        {}
+        <section className="comparison-section">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ textAlign: 'center', marginBottom: 52 }}
+          >
+            <div className="section-label" style={{ marginBottom: 10 }}>Why Obscura</div>
+            <h2 className="section-title">Built for privacy.<br />Not legacy systems.</h2>
+            <p className="section-desc" style={{ margin: '14px auto 0', textAlign: 'center' }}>
+              Connect your assets, data, and execution into one intelligent private system. Clarity, speed, and control at every layer.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ background: 'rgba(10,10,14,0.8)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', overflowX: 'auto' }}
+          >
+            <table className="comparison-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '35%' }}>Core capabilities</th>
+                  <th style={{ textAlign: 'center' }}>Trad. DEX</th>
+                  <th style={{ textAlign: 'center' }}>CEX</th>
+                  <th className="highlight">obscura</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { feat: 'Onchain privacy', other: 'No', cex: 'KYC required', obs: 'Shield protocol' },
+                  { feat: 'Hybrid AMM and RFQ routing', other: 'AMM only', cex: 'Orderbook', obs: 'Hybrid routing' },
+                  { feat: 'AI trade agent', other: 'No', cex: 'No', obs: 'Natural language' },
+                  { feat: 'Encrypted vaults', other: 'No', cex: 'No', obs: 'REX encryption' },
+                  { feat: 'Self custody', other: 'Partial', cex: 'No', obs: 'Full custody' },
+                  { feat: 'MEV protection', other: 'No', cex: 'N/A', obs: 'RFQ atomic' },
+                  { feat: 'Dark pool liquidity', other: 'No', cex: 'No', obs: 'Native' },
+                  { feat: 'Total cost monthly', other: '$1,700+', cex: '$1,200+', obs: 'Open protocol' },
+                ].map((row, i) => (
+                  <tr key={row.feat}>
+                    <td className="feature-name">{row.feat}</td>
+                    <td className="other-platform"><span className="cross-icon">{row.other}</span></td>
+                    <td className="other-platform"><span className="cross-icon">{row.cex}</span></td>
+                    <td className="obscura-col"><span className="check-icon">{row.obs}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </motion.div>
+        </section>
+
+        {}
+        <section className="cta-section">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="section-label" style={{ marginBottom: 16, textAlign: 'center' }}>Get started</div>
+            <h2 className="section-title" style={{ textAlign: 'center', maxWidth: 520, margin: '0 auto 18px' }}>
+              Trade in complete privacy. Operate at a new level.
+            </h2>
+            <p className="section-desc" style={{ textAlign: 'center', margin: '0 auto 40px' }}>
+              Obscura brings your assets, intelligence, and execution into one private system. Clarity and control across every layer.
+            </p>
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button className="btn-primary" onClick={goToApp} style={{ fontSize: '0.9rem', paddingInline: 32 }}>
+                Launch app
+              </button>
+              <a href="/docs" style={{ display: 'inline-block' }}>
+                <button className="btn-secondary" style={{ fontSize: '0.9rem' }}>
+                  Read docs
+                </button>
+              </a>
             </div>
 
-            <div style={{ padding: '15px', background: 'rgba(0,240,255,0.05)', borderRadius: '10px', fontSize: '0.85rem', color: 'var(--text-dim)', lineHeight: 1.7 }}>
-                💡 <strong style={{ color: 'var(--neon-cyan)' }}>Rialo Infrastructure:</strong> On Rialo mainnet, AI agents can be deployed as
-                autonomous smart contracts using reactive transactions — executing trades, rebalancing, and managing positions 24/7 without human intervention.
+            {}
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center', marginTop: 48 }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 12px var(--accent)', animation: 'pulse-dot 1.5s infinite' }} />
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                Live on Base Sepolia. Connect your wallet to start.
+              </span>
             </div>
-        </div>
-    );
-};
+          </motion.div>
+        </section>
 
-/* ──────────────────────────────────────────────
-   Main Landing Component
-   ────────────────────────────────────────────── */
-const Landing = () => {
-    const navigate = useNavigate();
-    const [activeDemo, setActiveDemo] = useState<'amm' | 'rfq' | 'ai' | null>(null);
-
-    const features = [
-        { icon: '🔄', title: 'Smart Routing', description: 'Hybrid AMM + RFQ routing for best execution on every trade', color: 'var(--neon-cyan)' },
-        { icon: '💰', title: 'Multi-Asset Support', description: 'Trade stablecoins, commodities, and tokenized stocks seamlessly', color: 'var(--neon-purple)' },
-        { icon: '📊', title: 'Real-Time Markets', description: 'Live price feeds and comprehensive market data at your fingertips', color: 'var(--neon-cyan)' },
-        { icon: '🤖', title: 'AI Agent Trading', description: 'Swap with natural language — just tell the AI what you want', color: 'var(--neon-purple)' },
-        { icon: '📈', title: 'Portfolio Tracking', description: 'Monitor all your positions and activity history in one place', color: 'var(--neon-cyan)' },
-        { icon: '💧', title: 'Liquidity Provision', description: 'Provide liquidity to pools and earn trading fees', color: 'var(--neon-purple)' },
-    ];
-
-    const assets = [
-        { symbol: 'USDO', name: 'USDO', category: 'Stablecoin' },
-        { symbol: 'USDT', name: 'Tether USD', category: 'Stablecoin' },
-        { symbol: 'USDe', name: 'Ethena USDe', category: 'Stablecoin' },
-        { symbol: 'GOLD', name: 'Gold Token', category: 'Commodity' },
-        { symbol: 'AAPL', name: 'Apple Stock', category: 'Stock' },
-        { symbol: 'MSTR', name: 'MicroStrategy Stock', category: 'Stock' },
-    ];
-
-    const howItWorks = [
-        { step: 1, icon: '🔐', title: 'Deposit & Shield', description: 'Deposit tokens into the privacy layer. Shield your balance from public view using advanced REX encryption.', color: 'var(--neon-cyan)' },
-        { step: 2, icon: '⚡', title: 'Swap & Trade', description: 'AI-powered routing finds the best price across AMM pools and RFQ market makers. Zero slippage, zero MEV.', color: 'var(--neon-purple)' },
-        { step: 3, icon: '📈', title: 'Earn & Grow', description: 'Supply liquidity to pools, earn trading fees, and compound your rewards automatically on Obscura.', color: '#00FF88' },
-    ];
-
-    const comparisonData = [
-        { feature: 'Privacy', tradDex: '❌ Public', cex: '❌ KYC Required', obscura: '✅ Shield / Unshield' },
-        { feature: 'Swap Routing', tradDex: 'AMM Only', cex: 'Orderbook', obscura: '✅ Hybrid AMM + RFQ' },
-        { feature: 'AI Agent', tradDex: '❌', cex: '❌', obscura: '✅ NLP Swap' },
-        { feature: 'Self-Custody', tradDex: '✅', cex: '❌ Exchange holds', obscura: '✅' },
-        { feature: 'Real-World Assets', tradDex: 'Limited', cex: 'Some', obscura: '✅ Stocks & Gold' },
-        { feature: 'Liquidity Source', tradDex: 'LP Pools', cex: 'Maker/Taker', obscura: '✅ LP + RFQ Makers' },
-        { feature: 'MEV Protection', tradDex: '❌', cex: 'N/A', obscura: '✅ RFQ Atomic' },
-    ];
-
-    return (
-        <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
-            <BackgroundGrid />
-
-            <div style={{ position: 'relative', zIndex: 10 }}>
-                <Navbar />
-
-                {/* ═══════════════════ HERO ═══════════════════ */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '0 20px', textAlign: 'center', paddingTop: '80px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                        {/* Badge */}
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 20px', background: 'rgba(0,240,255,0.08)', border: '1px solid rgba(0,240,255,0.25)', borderRadius: '30px', marginBottom: '30px' }}>
-                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00FF88', boxShadow: '0 0 10px #00FF88' }} />
-                            <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.8rem', color: 'var(--neon-cyan)', letterSpacing: '1px' }}>PRIVACY-FIRST DEFI PROTOCOL</span>
-                        </motion.div>
-
-                        <img src="/Logo 2.jpg" alt="Obscura"
-                            style={{ width: '120px', marginBottom: '40px', borderRadius: '50%', border: '3px solid var(--neon-cyan)', boxShadow: '0 0 40px rgba(0, 240, 255, 0.3)', display: 'block', margin: '0 auto 40px' }} />
-
-                        <h1 className="glow-text" style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', marginBottom: '20px', letterSpacing: '3px', fontFamily: 'Rajdhani' }}>
-                            OBSCURA
-                        </h1>
-
-                        <p style={{ color: 'var(--neon-cyan)', fontSize: '1.5rem', marginBottom: '15px', fontFamily: 'JetBrains Mono', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                            The Shadow Layer
-                        </p>
-
-                        <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', marginBottom: '50px', maxWidth: '750px', lineHeight: '1.8', margin: '0 auto 50px' }}>
-                            Next-generation DeFi platform with AI-powered trading, hybrid AMM+RFQ routing, encrypted vaults, and on-chain privacy.
-                            <br />Built on Rialo Infrastructure — currently live on Base Sepolia Testnet.
-                        </p>
-
-                        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                            <button className="btn-primary" onClick={() => navigate('/app')}
-                                style={{ fontSize: '1.1rem', padding: '18px 50px' }}>
-                                LAUNCH APP →
-                            </button>
-                            <button className="btn-purple" onClick={() => document.getElementById('demos')?.scrollIntoView({ behavior: 'smooth' })}
-                                style={{ fontSize: '1.1rem', padding: '18px 40px' }}>
-                                EXPLORE DEMOS ↓
-                            </button>
-                        </div>
-
-                        <div style={{ marginTop: '80px', display: 'flex', gap: '60px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            {[
-                                { icon: '🔒', label: 'Private', color: 'var(--neon-cyan)' },
-                                { icon: '⚡', label: 'Fast', color: 'var(--neon-purple)' },
-                                { icon: '🤖', label: 'AI-Powered', color: 'var(--neon-cyan)' },
-                                { icon: '🛡️', label: 'Secure', color: 'var(--neon-purple)' },
-                            ].map(item => (
-                                <div key={item.label}>
-                                    <div style={{ color: item.color, fontSize: '2rem', fontFamily: 'JetBrains Mono', marginBottom: '10px' }}>{item.icon}</div>
-                                    <div style={{ color: 'var(--text-dim)', fontSize: '0.9rem' }}>{item.label}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* ═══════════════════ HOW IT WORKS ═══════════════════ */}
-                <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '100px 20px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <h2 className="glow-text" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '20px', fontFamily: 'Rajdhani' }}>HOW IT WORKS</h2>
-                        <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', fontFamily: 'JetBrains Mono' }}>// THREE STEPS TO PRIVATE DEFI</p>
-                    </motion.div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-                        {howItWorks.map((item, index) => (
-                            <motion.div key={item.step}
-                                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: index * 0.15 }}
-                                className="cyber-card"
-                                style={{ padding: '40px 30px', textAlign: 'center', position: 'relative', borderColor: item.color, overflow: 'visible' }}>
-                                {/* Step Number */}
-                                <div style={{
-                                    position: 'absolute', top: '-18px', left: '20px',
-                                    width: '36px', height: '36px', borderRadius: '50%',
-                                    background: item.color, color: '#000', fontFamily: 'JetBrains Mono',
-                                    fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    boxShadow: `0 0 20px ${item.color}60`,
-                                }}>{item.step}</div>
-                                <div style={{ fontSize: '3rem', marginBottom: '20px' }}>{item.icon}</div>
-                                <h3 style={{ color: item.color, fontSize: '1.3rem', marginBottom: '15px', fontFamily: 'Rajdhani', fontWeight: 'bold' }}>{item.title}</h3>
-                                <p style={{ color: 'var(--text-dim)', fontSize: '0.95rem', lineHeight: '1.6' }}>{item.description}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ═══════════════════ INTERACTIVE DEMOS ═══════════════════ */}
-                <div id="demos" style={{ maxWidth: '1400px', margin: '0 auto', padding: '100px 20px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <h2 className="glow-text" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '20px', fontFamily: 'Rajdhani' }}>INTERACTIVE DEMOS</h2>
-                        <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', fontFamily: 'JetBrains Mono', maxWidth: '700px', margin: '0 auto' }}>
-                            // EXPLORE OUR CORE TECHNOLOGY — CLICK "TRY DEMO" TO SEE IT IN ACTION
-                        </p>
-                    </motion.div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
-                        {[
-                            {
-                                id: 'amm' as const, icon: '⚙️', title: 'AMM ENGINE', subtitle: 'Constant Product Market Maker',
-                                description: 'See how the x × y = k formula determines swap prices. Adjust the trade size and watch reserves change in real time.',
-                                color: 'var(--neon-cyan)',
-                                code: 'x × y = k → SWAP(USDO, GOLD)',
-                            },
-                            {
-                                id: 'rfq' as const, icon: '🏦', title: 'RFQ SYSTEM', subtitle: 'Request for Quote Protocol',
-                                description: 'Watch market makers compete for your order. The best price wins — zero slippage, zero MEV, atomic execution.',
-                                color: 'var(--neon-purple)',
-                                code: 'REQUEST → QUOTE → MATCH → SETTLE',
-                            },
-                            {
-                                id: 'ai' as const, icon: '🤖', title: 'AI AGENT', subtitle: 'Natural Language Trading',
-                                description: 'Type "swap 5 USDO to GOLD" and watch the AI parse, preview, and execute your trade with a single wallet confirmation.',
-                                color: '#00FF88',
-                                code: '"swap 5 USDO to GOLD" → EXECUTE',
-                            },
-                        ].map((demo, index) => (
-                            <motion.div key={demo.id}
-                                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                whileHover={{ y: -8 }}
-                                className="cyber-card"
-                                style={{ padding: '35px 30px', cursor: 'default', borderColor: demo.color }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>{demo.icon}</div>
-                                <h3 style={{ color: demo.color, fontSize: '1.3rem', marginBottom: '5px', fontFamily: 'Rajdhani', fontWeight: 'bold' }}>{demo.title}</h3>
-                                <div style={{ color: 'var(--text-dim)', fontSize: '0.8rem', fontFamily: 'JetBrains Mono', marginBottom: '15px' }}>{demo.subtitle}</div>
-                                <p style={{ color: 'var(--text-dim)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '20px' }}>{demo.description}</p>
-                                
-                                {/* Code snippet */}
-                                <div style={{
-                                    background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.08)',
-                                    borderRadius: '8px', padding: '10px 16px', marginBottom: '20px',
-                                    fontFamily: 'JetBrains Mono', fontSize: '0.8rem', color: demo.color,
-                                }}>{demo.code}</div>
-
-                                <button onClick={() => setActiveDemo(demo.id)}
-                                    style={{
-                                        width: '100%', padding: '12px', background: `${demo.color}15`,
-                                        border: `1px solid ${demo.color}`, borderRadius: '10px',
-                                        color: demo.color, fontFamily: 'JetBrains Mono', fontWeight: 'bold',
-                                        fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.3s',
-                                        letterSpacing: '1px',
-                                    }}>
-                                    TRY DEMO →
-                                </button>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ═══════════════════ COMPARISON TABLE ═══════════════════ */}
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '100px 20px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2 className="glow-text" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '20px', fontFamily: 'Rajdhani' }}>WHY OBSCURA?</h2>
-                        <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', fontFamily: 'JetBrains Mono' }}>// SEE HOW WE COMPARE</p>
-                    </motion.div>
-
-                    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        className="cyber-card" style={{ overflow: 'hidden', borderColor: 'var(--neon-cyan)' }}>
-                        <div style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'JetBrains Mono', fontSize: '0.85rem' }}>
-                                <thead>
-                                    <tr style={{ borderBottom: '1px solid rgba(0,240,255,0.2)' }}>
-                                        <th style={{ padding: '20px', textAlign: 'left', color: 'var(--text-dim)', fontWeight: 'normal' }}>FEATURE</th>
-                                        <th style={{ padding: '20px', textAlign: 'center', color: 'var(--text-dim)', fontWeight: 'normal' }}>TRAD. DEX</th>
-                                        <th style={{ padding: '20px', textAlign: 'center', color: 'var(--text-dim)', fontWeight: 'normal' }}>CEX</th>
-                                        <th style={{ padding: '20px', textAlign: 'center', color: 'var(--neon-cyan)', fontWeight: 'bold', background: 'rgba(0,240,255,0.05)' }}>OBSCURA ✦</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {comparisonData.map((row, i) => (
-                                        <tr key={row.feature} style={{ borderBottom: i < comparisonData.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-                                            <td style={{ padding: '16px 20px', color: 'white', fontWeight: 'bold' }}>{row.feature}</td>
-                                            <td style={{ padding: '16px 20px', textAlign: 'center', color: 'var(--text-dim)' }}>{row.tradDex}</td>
-                                            <td style={{ padding: '16px 20px', textAlign: 'center', color: 'var(--text-dim)' }}>{row.cex}</td>
-                                            <td style={{ padding: '16px 20px', textAlign: 'center', color: '#00FF88', background: 'rgba(0,240,255,0.03)', fontWeight: 'bold' }}>{row.obscura}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* ═══════════════════ RIALO INFRASTRUCTURE ═══════════════════ */}
-                <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '100px 20px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2 className="glow-text" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '20px', fontFamily: 'Rajdhani' }}>POWERED BY RIALO</h2>
-                        <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', fontFamily: 'JetBrains Mono', maxWidth: '700px', margin: '0 auto' }}>
-                            // OBSCURA IS BUILT ON RIALO'S UNIQUE BLOCKCHAIN INFRASTRUCTURE
-                        </p>
-                    </motion.div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px', marginBottom: '50px' }}>
-                        {[
-                            {
-                                icon: '⚡', title: 'Reactive Transactions',
-                                description: 'Native conditional execution built into the blockchain. Define predicates, attach actions — no bots, no keepers, no cron jobs.',
-                                color: 'var(--neon-cyan)',
-                                link: 'https://reactive-transactions.learn.rialo.io/',
-                            },
-                            {
-                                icon: '🔐', title: 'REX Privacy Layer',
-                                description: 'Shield and unshield tokens seamlessly. Your balances are encrypted on-chain — only you control visibility.',
-                                color: 'var(--neon-purple)',
-                                link: 'https://learn.rialo.io/',
-                            },
-                            {
-                                icon: '📡', title: 'On-Chain Data Feeds',
-                                description: 'Real-time price oracles via Pyth Network. Natively integrated with reactive transactions for automated strategies.',
-                                color: '#00FF88',
-                                link: 'https://learn.rialo.io/',
-                            },
-                            {
-                                icon: '🧠', title: 'AI-Native Blockchain',
-                                description: 'Deploy AI agents as autonomous smart contracts. Verifiable inference, on-chain reasoning, and automated portfolio management.',
-                                color: '#FFD700',
-                                link: 'https://learn.rialo.io/',
-                            },
-                        ].map((item, index) => (
-                            <motion.div key={item.title}
-                                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                whileHover={{ y: -5 }}
-                                className="cyber-card"
-                                style={{ padding: '35px 25px', borderColor: item.color }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>{item.icon}</div>
-                                <h3 style={{ color: item.color, fontSize: '1.2rem', marginBottom: '12px', fontFamily: 'Rajdhani', fontWeight: 'bold' }}>{item.title}</h3>
-                                <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', lineHeight: '1.6' }}>{item.description}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ═══════════════════ FEATURES (existing) ═══════════════════ */}
-                <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '100px 20px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <h2 className="glow-text" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '20px', fontFamily: 'Rajdhani' }}>PLATFORM FEATURES</h2>
-                        <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', fontFamily: 'JetBrains Mono' }}>// EVERYTHING YOU NEED FOR ADVANCED DEFI</p>
-                    </motion.div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-                        {features.map((feature, index) => (
-                            <motion.div key={feature.title}
-                                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                whileHover={{ y: -5 }}
-                                className="cyber-card"
-                                style={{ padding: '40px 30px', textAlign: 'center', cursor: 'default', borderColor: feature.color }}>
-                                <div style={{ fontSize: '3rem', marginBottom: '20px', filter: `drop-shadow(0 0 10px ${feature.color})` }}>{feature.icon}</div>
-                                <h3 style={{ color: feature.color, fontSize: '1.3rem', marginBottom: '15px', fontFamily: 'Rajdhani', fontWeight: 'bold' }}>{feature.title}</h3>
-                                <p style={{ color: 'var(--text-dim)', fontSize: '0.95rem', lineHeight: '1.6' }}>{feature.description}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ═══════════════════ SUPPORTED ASSETS (existing) ═══════════════════ */}
-                <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '100px 20px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <h2 className="glow-text" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '20px', fontFamily: 'Rajdhani' }}>SUPPORTED ASSETS</h2>
-                        <p style={{ color: 'var(--text-dim)', fontSize: '1.1rem', fontFamily: 'JetBrains Mono' }}>// 6 ASSETS READY FOR TRADING</p>
-                    </motion.div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '25px' }}>
-                        {assets.map((asset, index) => (
-                            <motion.div key={asset.symbol}
-                                initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-                                transition={{ duration: 0.4, delay: index * 0.08 }}
-                                whileHover={{ scale: 1.05 }}
-                                className="cyber-card"
-                                style={{ padding: '30px 25px', textAlign: 'center', cursor: 'default' }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>
-                                    {asset.category === 'Stablecoin' ? '💵' : asset.category === 'Commodity' ? '🪙' : '📈'}
-                                </div>
-                                <h3 style={{ color: 'white', fontSize: '1.5rem', marginBottom: '8px', fontFamily: 'JetBrains Mono', fontWeight: 'bold' }}>{asset.symbol}</h3>
-                                <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', marginBottom: '12px' }}>{asset.name}</p>
-                                <span style={{ display: 'inline-block', padding: '5px 15px', background: 'rgba(0, 240, 255, 0.1)', border: '1px solid var(--neon-cyan)', borderRadius: '20px', fontSize: '0.75rem', color: 'var(--neon-cyan)', fontFamily: 'JetBrains Mono' }}>
-                                    {asset.category}
-                                </span>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ═══════════════════ PLATFORM STATS + CTA (existing) ═══════════════════ */}
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '100px 20px 80px' }}>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        className="cyber-card"
-                        style={{ padding: '60px 40px', textAlign: 'center', background: 'rgba(0, 240, 255, 0.05)', borderColor: 'var(--neon-cyan)' }}>
-                        <h2 className="glow-text" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: '50px', fontFamily: 'Rajdhani' }}>PLATFORM STATISTICS</h2>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px' }}>
-                            {[
-                                { value: '6', label: 'SUPPORTED ASSETS', color: 'var(--neon-cyan)' },
-                                { value: '3', label: 'ROUTING OPTIONS', color: 'var(--neon-purple)' },
-                                { value: 'OBSCURA', label: 'LIVE ON BASE SEPOLIA', color: 'var(--neon-cyan)' },
-                                { value: '🔐', label: 'ENCRYPTED VAULTS', color: 'var(--neon-purple)' },
-                            ].map(stat => (
-                                <div key={stat.label}>
-                                    <div style={{ fontSize: stat.value.length > 3 ? '2rem' : '3rem', fontFamily: 'JetBrains Mono', color: stat.color, marginBottom: '10px', fontWeight: 'bold' }}>{stat.value}</div>
-                                    <div style={{ color: 'var(--text-dim)', fontSize: '0.9rem', fontFamily: 'JetBrains Mono' }}>{stat.label}</div>
-                                </div>
-                            ))}
-                        </div>
-                        <div style={{ marginTop: '60px' }}>
-                            <button className="btn-primary" onClick={() => navigate('/app')} style={{ fontSize: '1.2rem', padding: '20px 60px' }}>
-                                GET STARTED →
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>
-
-                <Footer />
-            </div>
-
-            {/* ═══════════════════ DEMO MODALS ═══════════════════ */}
-            <DemoModal isOpen={activeDemo === 'amm'} onClose={() => setActiveDemo(null)} title="⚙️ AMM ENGINE DEMO" accentColor="#00F0FF">
-                <AMMDemoContent />
-            </DemoModal>
-
-            <DemoModal isOpen={activeDemo === 'rfq'} onClose={() => setActiveDemo(null)} title="🏦 RFQ SYSTEM DEMO" accentColor="#8A2BE2">
-                <RFQDemoContent />
-            </DemoModal>
-
-            <DemoModal isOpen={activeDemo === 'ai'} onClose={() => setActiveDemo(null)} title="🤖 AI AGENT DEMO" accentColor="#00FF88">
-                <AIAgentDemoContent />
-            </DemoModal>
-        </div>
-    );
+        <Footer />
+      </div>
+    </div>
+  );
 };
 
 export default Landing;

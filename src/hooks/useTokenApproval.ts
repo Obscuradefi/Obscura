@@ -8,7 +8,7 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
     const [needsApproval, setNeedsApproval] = useState(false);
     const spender = spenderAddress || SIMPLE_AMM_ADDRESS;
 
-    // Read current allowance
+    
     const { data: allowance, refetch: refetchAllowance } = useReadContract({
         address: tokenAddress as `0x${string}`,
         abi: ERC20_ABI,
@@ -19,7 +19,7 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
         },
     });
 
-    // Write approval
+    
     const {
         writeContract: approve,
         data: approvalHash,
@@ -27,7 +27,7 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
         error: approveError,
     } = useWriteContract();
 
-    // Wait for approval tx
+    
     const {
         isLoading: isApprovalConfirming,
         isSuccess: isApprovalConfirmed,
@@ -35,15 +35,15 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
         hash: approvalHash,
     });
 
-    // Check if needs approval
+    
     useEffect(() => {
-        // Wait for data to be ready
+        
         if (!amount || !tokenAddress) {
             setNeedsApproval(false);
             return;
         }
 
-        // If allowance is undefined, it's still loading - default to needing approval
+        
         if (allowance === undefined) {
             setNeedsApproval(true);
             return;
@@ -57,7 +57,7 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
         }
     }, [allowance, amount, tokenAddress]);
 
-    // Refetch allowance after approval confirmed
+    
     useEffect(() => {
         if (isApprovalConfirmed) {
             refetchAllowance();

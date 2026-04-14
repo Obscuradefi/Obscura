@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import { fetchAssetPrice } from '../lib/priceOracle';
 import { ASSET_PRICE_SOURCE } from '../config/priceFeeds';
 
-/**
- * Hook to fetch real-time price feeds for assets
- * @param symbol Asset symbol (AAPL, MSTR, USDT, GOLD, etc.)
- * @returns price, loading state, and error
- */
 export function usePriceFeed(symbol: string) {
     const [price, setPrice] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
@@ -43,10 +38,10 @@ export function usePriceFeed(symbol: string) {
             }
         };
 
-        // Initial fetch
+        
         fetchPrice();
 
-        // Refresh every 60 seconds
+        
         interval = setInterval(fetchPrice, 60000);
 
         return () => {
@@ -58,11 +53,6 @@ export function usePriceFeed(symbol: string) {
     return { price, loading, error };
 }
 
-/**
- * Hook to fetch multiple prices at once
- * @param symbols Array of asset symbols
- * @returns Map of symbol to price data
- */
 export function useMultiplePriceFeeds(symbols: string[]) {
     const [prices, setPrices] = useState<Record<string, number>>({});
     const [loading, setLoading] = useState(true);
