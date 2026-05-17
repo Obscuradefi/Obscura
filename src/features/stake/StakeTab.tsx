@@ -4,40 +4,57 @@ import { motion } from 'framer-motion';
 const StakeTab = () => {
     const vaults = [
         {
-            name: 'USDO Vault',
-            description: 'Stake USDO for yield generation',
-            icon: '💰',
+            name: 'USDC Yield Vault',
+            description:
+                'Stake USDC on Arc Testnet for protocol-fee yield. Auto-compounds AMM trading fees.',
         },
         {
-            name: 'Shielded USDO Vault',
-            description: 'Private staking with enhanced privacy',
-            icon: '🔒',
+            name: 'Shielded USDC Vault',
+            description:
+                'Privacy-preserving yield. Deposits enter the Shield protocol at HIGH privacy level and earn the same yield curve.',
         },
     ];
 
     return (
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <h2 className="glow-text" style={{ fontSize: '2.5rem', marginBottom: '15px' }}>
+            <h2
+                className="glow-text"
+                style={{ fontSize: '2.5rem', marginBottom: '15px' }}
+            >
                 STAKE
             </h2>
-            <p style={{ color: 'var(--text-dim)', marginBottom: '40px', fontFamily: 'JetBrains Mono', fontSize: '0.9rem' }}>
-        
+            <p
+                style={{
+                    color: 'var(--text-dim)',
+                    marginBottom: '40px',
+                    fontFamily: 'JetBrains Mono',
+                    fontSize: '0.9rem',
+                }}
+            >
+                Yield vaults backed by ObscuraAMM trading-fee revenue and the Shield protocol.
             </p>
 
-            <div style={{
-                padding: '30px',
-                background: 'rgba(138, 43, 226, 0.05)',
-                border: '1px dashed var(--neon-purple)',
-                borderRadius: '20px',
-                textAlign: 'center',
-                marginBottom: '40px',
-            }}>
-                <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>⏳</div>
-                <h3 style={{ color: 'var(--neon-purple)', marginBottom: '10px', fontSize: '1.3rem' }}>
+            <div
+                style={{
+                    padding: '30px',
+                    background: 'rgba(138, 43, 226, 0.05)',
+                    border: '1px dashed var(--neon-purple)',
+                    borderRadius: '20px',
+                    textAlign: 'center',
+                    marginBottom: '40px',
+                }}
+            >
+                <h3
+                    style={{
+                        color: 'var(--neon-purple)',
+                        marginBottom: '10px',
+                        fontSize: '1.3rem',
+                    }}
+                >
                     STAKING COMING SOON
                 </h3>
                 <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem' }}>
-                    Yield vaults will be available soon. Stay tuned.
+                    Vaults will deploy after the AMM and Shield protocol go live on Arc Testnet.
                 </p>
             </div>
 
@@ -55,23 +72,45 @@ const StakeTab = () => {
                             borderColor: 'rgba(138, 43, 226, 0.3)',
                         }}
                     >
-                        <div style={{ fontSize: '3rem', marginBottom: '15px' }}>{vault.icon}</div>
-                        <h3 style={{ color: 'var(--neon-purple)', marginBottom: '10px', fontSize: '1.2rem' }}>
+                        <h3
+                            style={{
+                                color: 'var(--neon-purple)',
+                                marginBottom: '10px',
+                                fontSize: '1.2rem',
+                            }}
+                        >
                             {vault.name}
                         </h3>
-                        <p style={{ color: 'var(--text-dim)', marginBottom: '20px', fontSize: '0.85rem' }}>
+                        <p
+                            style={{
+                                color: 'var(--text-dim)',
+                                marginBottom: '20px',
+                                fontSize: '0.85rem',
+                                lineHeight: 1.6,
+                            }}
+                        >
                             {vault.description}
                         </p>
 
-                        <div style={{
-                            padding: '12px',
-                            background: 'rgba(255, 255, 255, 0.02)',
-                            borderRadius: '12px',
-                            marginBottom: '15px',
-                        }}>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '5px' }}>APY</div>
-                            <div style={{ fontSize: '1.5rem', fontFamily: 'JetBrains Mono', color: 'var(--neon-purple)' }}>
-                                - - -
+                        <div
+                            style={{
+                                padding: '12px',
+                                background: 'rgba(255, 255, 255, 0.02)',
+                                borderRadius: '12px',
+                                marginBottom: '15px',
+                            }}
+                        >
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '5px' }}>
+                                Target APY
+                            </div>
+                            <div
+                                style={{
+                                    fontSize: '1.5rem',
+                                    fontFamily: 'JetBrains Mono',
+                                    color: 'var(--neon-purple)',
+                                }}
+                            >
+                                — — —
                             </div>
                         </div>
 

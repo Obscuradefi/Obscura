@@ -115,9 +115,8 @@ const MarketsTab: React.FC<MarketsTabProps> = ({ onSwapClick }) => {
         background: 'rgba(13,13,18,0.7)', border: '1px solid rgba(255,255,255,0.05)',
         borderRadius: 12, fontSize: '0.78rem', color: G.dim, textAlign: 'center',
       }}>
-        Prices fetched from Massive API, Pyth Network, and GoldAPI.
+        Indicative prices on Arc Testnet. Spot rates execute against ObscuraAMM (USDC-quoted).
         <span style={{ color: 'var(--green-400)', marginLeft: 6 }}>●</span>
-        <span style={{ marginLeft: 4 }}>Live data.</span>
       </div>
     </div>
   );

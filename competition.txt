@@ -1,0 +1,150 @@
+The Stablecoin Commerce Stack Challenge is a 3-month virtual program led by Ignyte, with Circle and Arc as technical sponsors, bringing together developers to explore how stablecoins can address key regional opportunities across:
+
+Cross-border payments and remittances
+SME finance and trade workflows
+Tokenized assets and compliant DeFi
+The agentic economy
+For educational and testnet demo purposes only
+
+Why Build on Arc?
+Arc is a purpose-built L1 blockchain from Circle, designed to support programmable, stablecoin-based applications. It provides the foundation for developers to build and test financial systems with predictable costs, real-time settlement, and programmable logic.
+
+With Arc, developers can:
+
+Settle transactions in USDC with predictable, dollar-denominated fees
+Achieve deterministic finality for real-time financial workflows
+Build programmable payment flows using smart contracts
+Support cross-chain USDC movement with Circle infrastructure
+Design systems for payments, distribution, and financial workflows
+Core resources:
+
+Arc docs
+Circle docs
+Arc sample apps
+Tracks
+1) Best Cross-Border Payments & Remittances Experience (UAE → Global)
+Prize:
+
+1st Place - 5000 USDC
+2nd Place - 3000 USDC
+Goal: Build instant, low-cost cross-border payment and remittance flows using Circle’s regulated stablecoins—optimized for UAE’s high-expat corridor needs (consumer remittances, B2B settlement, global payroll, freelancer payouts).
+
+What to build (examples):
+
+Remittance app with transparent fees + real-time settlement confirmation
+Marketplace settlement (UAE-based platform paying global sellers/creators)
+Global payroll / contractor payouts with stablecoin settlement and receipts
+“Pay-in AED, settle in USDC” merchant settlement prototype (conceptual UX + rails)
+Recommended Circle tools on Arc:
+
+USDC (primary stablecoin rail)
+CCTP with Bridge Kit (cross-chain USDC transfers where relevant)
+Circle Wallets (embedded wallet UX for non-crypto-native users)
+Circle Gateway (routing, treasury movement, settlement workflows)
+Gated / advanced tools:
+
+StableFX - for FX-aware settlement concepts / multi-currency routing
+2) Best SME Trade Finance & Working Capital Workflow (Invoices, Escrow, Settlement)
+Prize:
+
+1st Place - 5000 USDC
+2nd Place - 3000 USDC
+Goal: Build working-capital and trade-finance solutions that reduce friction for SMEs (Small and Medium-Sized Enterprises)—using stablecoin escrow, tokenized receivables, automated settlement, and verifiable payment histories.
+
+What to build (examples):
+
+Invoice factoring / receivables financing prototype with automated repayment waterfalls
+Stablecoin escrow for import/export settlement (milestone-based release)
+Purchase-order financing workflow with proof-of-delivery triggers
+SME “credit passport” using verifiable transaction history + repayment behavior
+Recommended Circle tools on Arc:
+
+USDC (settlement + escrow)
+CCTP with Bridge Kit (cross-chain USDC transfers where relevant)
+Circle Wallets (embedded wallet UX for non-crypto-native users)
+Circle Gateway (treasury routing, multi-party flows, operational movement)
+Gated / advanced tools:
+
+USYC - yield-bearing cash management concepts for idle treasury/inventory float
+3) Best Real World Asset Tokenization on Arc with Embedded Compliance
+Prize:
+
+1st Place - 3000 USDC
+Goal:
+Build infrastructure and applications for tokenizing real-world assets with embedded compliance, regulatory transparency, and institutional-grade controls on Arc.
+
+This track focuses on how stablecoins and smart contracts can power the next generation of regulated digital assets in the UAE and broader GCC, where tokenization, fixed income innovation, and compliant capital markets infrastructure are rapidly evolving.
+
+
+What to Build (Examples):
+
+Fixed Income: Fractional bonds, treasury instruments, automated yield distribution, compliant secondary trading
+Sukuk & Structured Products: Fractional sukuk platforms, programmable profit distribution, embedded compliance logic
+Real Estate & Alternatives: Tokenized property, REIT-style rent flows, commodities or carbon assets
+Compliance Infrastructure: Onchain transfer restrictions, KYC/AML-aware logic, investor accreditation checks, audit dashboards
+Recommended Circle tools on Arc:
+
+USDC — compliant settlement and distributions
+Circle Wallets — investor and issuer interaction layer
+Circle Gateway — treasury and payout orchestration
+Enterprise / Gated Tools (request access):
+
+USYC (Enterprise only)
+StableFX (Enterprise only)
+4) Best Agentic Economy Experience on Arc
+Prize:
+
+1st Place - 4000 USDC
+2nd Place - 2000 USDC
+Goal:
+Build autonomous economic experiences where AI agents can research, negotiate, and execute transactions on behalf of users or businesses using onchain rails and programmable payment logic.
+
+What to build (examples):
+
+An AI agent that autonomously discovers and executes a stablecoin-settled purchase using Arc smart contracts
+Automated subscription purchase workflows where agents manage renewal, budgeting, and payment authorization
+Autonomous merchant settlement systems where AI negotiates and settles with multiple onchain counterparties
+AI-driven loyalty programs that reason about cost, rewards, and payment routing across wallets and chains
+Pay-per-inference AI agents that pay for each model response or dataset access in real time
+Streaming payments for content or APIs based on continuous usage (per second or event)
+Recommended Tools:
+
+USDC — settlement rail for agent-executed payments
+Circle Wallets — secure key management for agent-initiated transactions
+CCTP with Bridge Kit (cross-chain USDC transfers where relevant)
+Circle Gateway — backend liquidity and routing for agent-orchestrated payments that require treasury ops
+Nanopayments - enable high-frequency, sub-cent transactions for real-time agentic payment flows
+Callout for Enterprise & Gated Tooling
+Some Circle products referenced in this hackathon are enterprise-only and subject to eligibility and onboarding requirements which is not automatic and requires an approval request.
+
+Teams interested in using enterprise or gated products must request access using this form. Once complete, please email customer-support@circle.com with the subject line: "Circle Hackathon - USYC or StableFX testnet request".
+Access is subject to eligibility, use-case relevance, and Circle approval.
+Teams will not be penalized for building conceptual or architecture-level integrations if access is not granted during the hackathon window.
+Enterprise / Gated Products include:
+
+USYC
+StableFX
+Submission Requirements
+Submissions will be evaluated based on the following parameters:
+
+Title and Short Description
+Track submitted for
+Email associated with your Circle Developer Account (https://console.circle.com/signup)
+Select Circle products used on Arc
+USDC
+Wallets
+Gateway
+CCTP/Bridge Kit
+USYC
+StableFX
+Nanopayments
+Functional MVP and diagram: Projects must demonstrate a working frontend and backend plus an architecture diagram
+Video demonstration + presentation: Succinctly outlining the project's core functions and its effective use of Circle's Developer tools/tech is required, supported by detailed documentation
+Link to GitHub/Code repository: Ensure that this includes detailed documentation on how to set up the project, and how you carried out integration with Circle tools
+Demo Application Platform/Application URL
+Circle Product Feedback
+Include a clearly labeled section titled “Circle Product Feedback” covering:
+Why you chose these products for your use case
+What worked well during development
+What could be improved
+Any recommendations to make the product or developer experience more seamless or scalable

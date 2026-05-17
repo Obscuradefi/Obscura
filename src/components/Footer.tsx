@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
             <span style={{ fontFamily: "'MADE Future X Header', sans-serif", fontSize: '0.9rem', color: 'var(--green-400)', letterSpacing: '1px' }}>OBSCURA</span>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.83rem', lineHeight: '1.75', maxWidth: 280 }}>
-          Privacy first DeFi protocol with AI powered trading, hybrid AMM and RFQ routing, encrypted vaults, and dark pool liquidity. Built on Base.
+          Privacy first DeFi protocol with intent-based AI agents, hybrid AMM and RFQ routing, encrypted vaults, and dark pool liquidity. Built on Arc Testnet by Circle.
           </p>
           <div style={{ marginTop: 20, display: 'flex', gap: 10 }}>
             <a href="https://discord.com/invite/RialoProtocol" target="_blank" rel="noopener noreferrer" className="footer-social-link" title="Discord">

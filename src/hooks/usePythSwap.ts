@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
-import { SIMPLE_AMM_ABI, SIMPLE_AMM_ADDRESS } from '../config/dexConfig';
+import { OBSCURA_AMM_ABI } from '../config/dexConfig';
+import { OBSCURA_AMM_ADDRESS } from '../config/arc';
 import { PYTH_PRICE_IDS } from '../config/priceFeeds';
 import { getPythPriceUpdate, getPythUpdateFee } from '../lib/pythClient';
 
-interface UsePythSwapResult {
+export interface UsePythSwapResult {
     executePythSwap: (params: {
-        fromToken: string;
-        toToken: string;
+        fromToken: `0x${string}`;
+        toToken: `0x${string}`;
         fromSymbol: string;
         toSymbol: string;
         amountIn: string;
+        decimalsIn: number;
         minAmountOut: bigint;
     }) => Promise<void>;
     isPending: boolean;
@@ -21,6 +23,15 @@ interface UsePythSwapResult {
     hash?: `0x${string}`;
 }
 
+/**
+ * Pyth-fresh swap path: pulls signed price updates from Hermes, then calls
+ * `swapWithPriceUpdate` on ObscuraAMM so the trade settles at the most recent
+ * oracle price. The user pays the per-update fee in native USDC (msg.value).
+ *
+ * Use this for high-value swaps where you want guaranteed price freshness.
+ * For routine swaps the regular `swap()` path on ObscuraAMM is cheaper because
+ * it relies on whatever feed update was published most recently.
+ */
 export function usePythSwap(): UsePythSwapResult {
     const [error, setError] = useState<Error | null>(null);
 
@@ -31,10 +42,7 @@ export function usePythSwap(): UsePythSwapResult {
         error: writeError,
     } = useWriteContract();
 
-    const {
-        isLoading: isConfirming,
-        isSuccess,
-    } = useWaitForTransactionReceipt({ hash });
+    const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
     const executePythSwap = async ({
         fromToken,
@@ -42,56 +50,41 @@ export function usePythSwap(): UsePythSwapResult {
         fromSymbol,
         toSymbol,
         amountIn,
+        decimalsIn,
         minAmountOut,
-    }: {
-        fromToken: string;
-        toToken: string;
-        fromSymbol: string;
-        toSymbol: string;
-        amountIn: string;
-        minAmountOut: bigint;
-    }) => {
+    }: Parameters<UsePythSwapResult['executePythSwap']>[0]) => {
         try {
             setError(null);
 
-            
-            const priceIds = [
-                PYTH_PRICE_IDS[fromSymbol as keyof typeof PYTH_PRICE_IDS],
-                PYTH_PRICE_IDS[toSymbol as keyof typeof PYTH_PRICE_IDS],
-            ].filter(Boolean);
+            const ids: string[] = [];
+            const symA = (PYTH_PRICE_IDS as Record<string, string>)[fromSymbol];
+            const symB = (PYTH_PRICE_IDS as Record<string, string>)[toSymbol];
+            if (symA) ids.push(symA);
+            if (symB) ids.push(symB);
 
-            if (priceIds.length !== 2) {
-                throw new Error(`Missing Pyth price feeds for ${fromSymbol}/${toSymbol}`);
-            }
+            // If neither leg has a Pyth feed (e.g. USDC on either side and the
+            // counter-asset isn't tracked) fall back to plain swap().
+            const priceUpdate = ids.length > 0 ? await getPythPriceUpdate(ids) : [];
+            const fee = getPythUpdateFee(priceUpdate.length);
 
-            console.log('[PythSwap] Fetching price updates...');
+            const amountBN = parseUnits(amountIn, decimalsIn);
 
-            
-            const priceUpdate = await getPythPriceUpdate(priceIds);
-            const updateFee = getPythUpdateFee(priceIds.length);
-
-            const amountBN = parseUnits(amountIn, 18);
-
-            console.log('[PythSwap] Executing swapWithPyth() with oracle pricing...');
-
-            
             writeContract({
-                address: SIMPLE_AMM_ADDRESS,
-                abi: SIMPLE_AMM_ABI,
-                functionName: 'swapWithPyth',
+                address: OBSCURA_AMM_ADDRESS,
+                abi: OBSCURA_AMM_ABI,
+                functionName: 'swapWithPriceUpdate',
                 args: [
-                    fromToken as `0x${string}`,
-                    toToken as `0x${string}`,
+                    fromToken,
+                    toToken,
                     amountBN,
                     minAmountOut,
                     priceUpdate as readonly `0x${string}`[],
                 ],
-                value: updateFee, 
+                value: fee,
             });
         } catch (err) {
             const errorMsg = err instanceof Error ? err : new Error('Unknown error');
             setError(errorMsg);
-            console.error('[PythSwap] Error:', errorMsg);
             throw errorMsg;
         }
     };

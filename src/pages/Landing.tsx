@@ -36,13 +36,13 @@ function AnimatedCounter({ target, prefix = '', suffix = '', decimals = 0 }: {
 }
 
 const tickerItems = [
-  { label: 'Privacy shield active. Transaction concealed across 47 nodes.', color: 'var(--green-400)' },
-  { label: 'AI routing. Best execution path found in 12ms.', color: 'var(--green-300)' },
-  { label: 'Dark pool liquidity. 2.4% performance improvement captured.', color: 'var(--green-400)' },
-  { label: 'New market signal. Volatility decreasing across digital assets.', color: 'var(--green-300)' },
-  { label: 'Vault deposit confirmed. Encrypted balance updated.', color: 'var(--green-400)' },
-  { label: 'AMM reserve rebalanced. USDO pool optimized.', color: 'var(--green-300)' },
-  { label: 'RFQ quote matched. Zero slippage execution complete.', color: 'var(--green-400)' },
+  { label: 'Maker pool fan-out: 3 quotes received in 280ms', color: 'var(--green-400)' },
+  { label: 'Pyth ceiling check passed: deviation 12bps', color: 'var(--green-300)' },
+  { label: 'Nanopay channel: agent paid $0.0035 across 4 services', color: 'var(--green-400)' },
+  { label: 'Conditional intent armed: GOLD < $4475 -> auto-execute', color: 'var(--green-300)' },
+  { label: 'EIP-712 quote signed by Wintermute persona', color: 'var(--green-400)' },
+  { label: 'AMM reserve rebalanced. USDC pool optimized.', color: 'var(--green-300)' },
+  { label: 'Settled on Arc: sub-second finality, 0.30% pool fee', color: 'var(--green-400)' },
 ];
 
 function LiveTicker() {
@@ -109,7 +109,7 @@ function DashboardMockup() {
           {}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 16 }}>
             {[
-              { label: 'USDO', value: '$25,600' },
+              { label: 'USDC', value: '$25,600' },
               { label: 'GOLD', value: '$35,200' },
               { label: 'Private', value: '$24,300' },
             ].map((s) => (
@@ -177,16 +177,16 @@ const Landing: React.FC = () => {
             >
               <div className="hero-badge">
                 <div className="hero-badge-dot" />
-                <span className="hero-badge-text">Privacy First DeFi Protocol</span>
+                <span className="hero-badge-text">Agentic Economy on Arc</span>
               </div>
 
               <h1 className="hero-title">
-                Privacy<br />
-                <span>Reimagined</span>
+                Autonomous<br />
+                <span>Stablecoin Agent</span>
               </h1>
 
               <p className="hero-subtitle">
-                A new standard in private onchain trading. Take full control of your assets with shielded transactions, AI powered routing, and encrypted vaults in real time.
+                Obscura researches, negotiates, and settles trades on Arc on your behalf. Multi-maker RFQ bounded by Pyth, sub-cent USDC nanopayments for every micro-event, and intent-based execution from natural language.
               </p>
 
               <div className="hero-cta-row">
@@ -202,8 +202,8 @@ const Landing: React.FC = () => {
               {}
               <div style={{ display: 'flex', gap: 28, marginTop: 44 }}>
                 {[
-                  { label: 'Assets Supported', value: 6 },
-                  { label: 'Routing Options', value: 3 },
+                  { label: 'Stablecoins', value: 3 },
+                  { label: 'Maker Pool', value: 3 },
                 ].map(({ label, value }) => (
                   <div key={label}>
                     <div style={{ fontSize: '1.05rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--text-main)' }}>
@@ -214,7 +214,7 @@ const Landing: React.FC = () => {
                 ))}
                 <div>
                   <div style={{ fontSize: '1.05rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--green-300)' }}>Live</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-dim)', marginTop: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Base Sepolia</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-dim)', marginTop: 3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Arc Testnet</div>
                 </div>
               </div>
             </motion.div>
@@ -258,7 +258,7 @@ const Landing: React.FC = () => {
                 preview: (
                   <div style={{ background: 'rgba(13,13,18,0.8)', border: '1px solid var(--glass-border)', borderRadius: 14, padding: '18px 20px' }}>
                     <div style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Portfolio Overview</div>
-                    {['USDO', 'GOLD', 'AAPL', 'cUSDO'].map((sym, i) => (
+                    {['USDC', 'GOLD', 'AAPL', 'cUSDC'].map((sym, i) => (
                       <div key={sym} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: i < 3 ? '1px solid var(--glass-border-light)' : 'none' }}>
                         <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-main)' }}>{sym}</span>
                         <span className="badge-green" style={{ fontSize: '0.62rem' }}>+{(Math.random() * 5 + 0.5).toFixed(1)}%</span>
@@ -478,14 +478,14 @@ const Landing: React.FC = () => {
           {}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 28 }}>
             {[
-              { name: 'Base', color: '#0052FF' },
-              { name: 'Uniswap', color: '#FF007A' },
-              { name: 'Pyth Network', color: '#E6C979' },
+              { name: 'Arc by Circle', color: '#5FBFFF' },
+              { name: 'USDC (native)', color: '#2775CA' },
+              { name: 'CCTP v2', color: '#0091FF' },
               { name: 'RainbowKit', color: '#7B68EE' },
               { name: 'Wagmi', color: '#4B9BFF' },
               { name: 'Viem', color: '#FCA5A5' },
               { name: 'WalletConnect', color: '#3B99FC' },
-              { name: 'REX Protocol', color: 'var(--green-400)' },
+              { name: 'Hardhat', color: 'var(--green-400)' },
             ].map((p) => (
               <motion.div
                 key={p.name}
@@ -592,7 +592,7 @@ const Landing: React.FC = () => {
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center', marginTop: 48 }}>
               <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 12px var(--accent)', animation: 'pulse-dot 1.5s infinite' }} />
               <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Live on Base Sepolia. Connect your wallet to start.
+                Live on Arc Testnet. Connect your wallet to start.
               </span>
             </div>
           </motion.div>

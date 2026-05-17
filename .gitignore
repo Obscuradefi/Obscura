@@ -1,4 +1,14 @@
 node_modules
 dist
 .env
+.env.local
 .DS_Store
+
+# Hardhat
+artifacts
+cache
+typechain
+typechain-types
+
+# Deployment outputs (committed addresses live in deployments/)
+deployments/*.local.json

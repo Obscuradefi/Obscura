@@ -1,0 +1,30 @@
+// AUTO-GENERATED placeholder.
+// Run `npm run deploy:arc` to overwrite this file with real addresses.
+
+export const ARC_TESTNET_CHAIN_ID = 5042002;
+
+export const ARC_USDC_ADDRESS = '0x3600000000000000000000000000000000000000' as `0x${string}`;
+export const ARC_USDC_DECIMALS = 6;
+
+export const ARC_EURC_ADDRESS = '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a' as `0x${string}`;
+export const ARC_EURC_DECIMALS = 6;
+export const ARC_EURC_PRICE_ID = '0xa995d00bb36a63cef7fd2c287dc105fc8f3d93779f062f09551b0af3e81ec30b' as `0x${string}`;
+
+export const PYTH_CONTRACT_ADDRESS = '0x2880aB155794e7179c9eE2e38200202908C17B43' as `0x${string}`;
+
+export const OBSCURA_AMM_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+export const OBSCURA_SHIELD_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+export const OBSCURA_RFQ_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+export const OBSCURA_NANOPAY_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+
+export const RFQ_MAKER_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+export const RFQ_EXTRA_MAKERS: readonly string[] = [];
+
+export const MOCK_TOKENS = {
+  JPYC: { address: '0x0000000000000000000000000000000000000000' as `0x${string}`, decimals: 18, name: 'Mock Japanese Yen Coin', priceId: '0xef2c98c804ba503c6a707e38be4dfbb16683775f195b091252bf24693042fd52' as `0x${string}`, inverted: true },
+  GOLD: { address: '0x0000000000000000000000000000000000000000' as `0x${string}`, decimals: 18, name: 'Mock Tokenized Gold', priceId: '0x765d2ba906dbc32ca17cc11f5310a89e9ee1f6420508c63861f2f8ba4ee34bb2' as `0x${string}`, inverted: false },
+  AAPL: { address: '0x0000000000000000000000000000000000000000' as `0x${string}`, decimals: 18, name: 'Mock Apple Equity', priceId: '0x49f6b65cb1de6b10eaf75e7c03ca029c306d0357e91b5311b175084a5ad55688' as `0x${string}`, inverted: false },
+  MSTR: { address: '0x0000000000000000000000000000000000000000' as `0x${string}`, decimals: 18, name: 'Mock MicroStrategy', priceId: '0xe1e80251e5f5184f2195008382538e847fafc36f751896889dd3d1b1f6111f09' as `0x${string}`, inverted: false },
+} as const;
+
+export type MockTokenSymbol = keyof typeof MOCK_TOKENS;

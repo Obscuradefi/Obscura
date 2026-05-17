@@ -1,12 +1,9 @@
 import React from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useNavigate } from 'react-router-dom';
+import CircleWalletButton from './CircleWalletButton';
 
-interface AppHeaderProps {
-  onFaucetClick?: () => void;
-}
-
-const AppHeader: React.FC<AppHeaderProps> = ({ onFaucetClick }) => {
+const AppHeader: React.FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -34,29 +31,31 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onFaucetClick }) => {
             textTransform: 'uppercase',
           }}
         >
-          Base Sepolia
+          Arc Testnet
         </div>
 
-        {onFaucetClick && (
-          <button
-            onClick={onFaucetClick}
-            style={{
-              background: 'rgba(61,158,78,0.08)',
-              border: '1px solid rgba(61,158,78,0.25)',
-              color: 'var(--green-300)',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              padding: '6px 14px',
-              borderRadius: 'var(--radius-md)',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              letterSpacing: '0.02em',
-            }}
-          >
-            Faucet
-          </button>
-        )}
+        <a
+          href="https://faucet.circle.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            background: 'rgba(61,158,78,0.08)',
+            border: '1px solid rgba(61,158,78,0.25)',
+            color: 'var(--green-300)',
+            fontSize: '0.78rem',
+            fontWeight: 600,
+            padding: '6px 14px',
+            borderRadius: 'var(--radius-md)',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            letterSpacing: '0.02em',
+            textDecoration: 'none',
+          }}
+        >
+          Faucet
+        </a>
 
+        <CircleWalletButton />
         <ConnectButton />
       </div>
     </header>

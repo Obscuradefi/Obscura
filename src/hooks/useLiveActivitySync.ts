@@ -1,98 +1,97 @@
-import { useState } from 'react';
 import { useAccount, useWatchContractEvent } from 'wagmi';
 import { formatUnits } from 'viem';
 import { addActivity } from '../lib/fluxMock';
-import { SIMPLE_AMM_ADDRESS, SIMPLE_AMM_ABI } from '../config/dexConfig';
-import { SHIELD_CONTRACT_ADDRESS, SHIELD_ABI } from '../config/shieldConfig';
+import { OBSCURA_AMM_ABI } from '../config/dexConfig';
+import { SHIELD_ABI } from '../config/shieldConfig';
+import { OBSCURA_AMM_ADDRESS, OBSCURA_SHIELD_ADDRESS } from '../config/arc';
 import { FLUX_ASSETS } from '../data/fluxAssets';
 
 const processedTxs = new Set<string>();
 
-const getTokenSymbol = (address: string) => {
-    if (!address) return 'Token';
-    const asset = FLUX_ASSETS.find(a => 
-        a.contractAddress && a.contractAddress.toLowerCase() === address.toLowerCase()
+function lookupAsset(addr: string | undefined) {
+    if (!addr) return undefined;
+    return FLUX_ASSETS.find(
+        (a) => a.contractAddress && a.contractAddress.toLowerCase() === addr.toLowerCase()
     );
-    return asset ? asset.symbol : 'Token';
-};
+}
 
+function symbolFor(addr: string | undefined): string {
+    return lookupAsset(addr)?.symbol ?? 'Token';
+}
+
+function decimalsFor(addr: string | undefined): number {
+    return lookupAsset(addr)?.decimals ?? 18;
+}
+
+/**
+ * Mirror on-chain swap/shield/unshield events into the local activity log so
+ * the portfolio tab feels live. Only events for the connected user are
+ * surfaced; we de-dupe by tx hash.
+ */
 export function useLiveActivitySync() {
     const { address } = useAccount();
 
-    
     useWatchContractEvent({
-        address: SIMPLE_AMM_ADDRESS,
-        abi: SIMPLE_AMM_ABI,
+        address: OBSCURA_AMM_ADDRESS,
+        abi: OBSCURA_AMM_ABI,
         eventName: 'Swap',
-        args: { user: address }, 
+        args: { user: address },
         onLogs(logs) {
-            logs.forEach(log => {
+            logs.forEach((log) => {
                 if (!log.transactionHash || processedTxs.has(log.transactionHash)) return;
-                
-                
-                if (log.args.user?.toLowerCase() === address?.toLowerCase()) {
-                    processedTxs.add(log.transactionHash);
-                    
-                    const tokenIn = getTokenSymbol(log.args.tokenIn as string);
-                    const tokenOut = getTokenSymbol(log.args.tokenOut as string);
-                    const amountIn = formatUnits(log.args.amountIn as bigint, 18);
-                    const amountOut = formatUnits(log.args.amountOut as bigint, 18);
-                    
-                    addActivity({
-                        type: 'swap',
-                        description: `Swapped ${parseFloat(amountIn).toFixed(2)} ${tokenIn} for ${parseFloat(amountOut).toFixed(2)} ${tokenOut}`
-                    });
-                }
+                if ((log.args as any).user?.toLowerCase() !== address?.toLowerCase()) return;
+                processedTxs.add(log.transactionHash);
+
+                const inAddr = (log.args as any).tokenIn as string;
+                const outAddr = (log.args as any).tokenOut as string;
+                const amountIn = formatUnits((log.args as any).amountIn as bigint, decimalsFor(inAddr));
+                const amountOut = formatUnits((log.args as any).amountOut as bigint, decimalsFor(outAddr));
+
+                addActivity({
+                    type: 'swap',
+                    description: `Swapped ${parseFloat(amountIn).toFixed(4)} ${symbolFor(inAddr)} for ${parseFloat(amountOut).toFixed(4)} ${symbolFor(outAddr)}`,
+                });
             });
         },
     });
 
-    
     useWatchContractEvent({
-        address: SHIELD_CONTRACT_ADDRESS,
+        address: OBSCURA_SHIELD_ADDRESS,
         abi: SHIELD_ABI,
         eventName: 'Shielded',
-        args: { user: address }, 
+        args: { user: address },
         onLogs(logs) {
-            logs.forEach(log => {
+            logs.forEach((log) => {
                 if (!log.transactionHash || processedTxs.has(log.transactionHash)) return;
+                if ((log.args as any).user?.toLowerCase() !== address?.toLowerCase()) return;
+                processedTxs.add(log.transactionHash);
 
-                if (log.args.user?.toLowerCase() === address?.toLowerCase()) {
-                    processedTxs.add(log.transactionHash);
-
-                    const token = getTokenSymbol(log.args.token as string);
-                    const amount = formatUnits(log.args.amount as bigint, 18);
-                    
-                    addActivity({
-                        type: 'shield',
-                        description: `Shielded ${parseFloat(amount).toFixed(2)} ${token}`
-                    });
-                }
+                const assetAddr = (log.args as any).asset as string;
+                const level = Number((log.args as any).level ?? 0);
+                addActivity({
+                    type: 'shield',
+                    description: `Shielded ${symbolFor(assetAddr)} (privacy level ${level})`,
+                });
             });
         },
     });
 
-    
     useWatchContractEvent({
-        address: SHIELD_CONTRACT_ADDRESS,
+        address: OBSCURA_SHIELD_ADDRESS,
         abi: SHIELD_ABI,
         eventName: 'Unshielded',
-        args: { user: address }, 
+        args: { user: address },
         onLogs(logs) {
-            logs.forEach(log => {
+            logs.forEach((log) => {
                 if (!log.transactionHash || processedTxs.has(log.transactionHash)) return;
+                if ((log.args as any).user?.toLowerCase() !== address?.toLowerCase()) return;
+                processedTxs.add(log.transactionHash);
 
-                if (log.args.user?.toLowerCase() === address?.toLowerCase()) {
-                    processedTxs.add(log.transactionHash);
-
-                    const token = getTokenSymbol(log.args.token as string);
-                    const amount = formatUnits(log.args.amount as bigint, 18);
-                    
-                    addActivity({
-                        type: 'unshield',
-                        description: `Unshielded ${parseFloat(amount).toFixed(2)} ${token}`
-                    });
-                }
+                const assetAddr = (log.args as any).asset as string;
+                addActivity({
+                    type: 'unshield',
+                    description: `Unshielded ${symbolFor(assetAddr)}`,
+                });
             });
         },
     });

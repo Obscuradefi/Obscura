@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
-import { ERC20_ABI, SIMPLE_AMM_ADDRESS } from '../config/dexConfig';
+import { ERC20_ABI } from '../config/dexConfig';
+import { OBSCURA_AMM_ADDRESS } from '../config/arc';
 
-export function useTokenApproval(tokenAddress: string | undefined, amount: string, spenderAddress?: `0x${string}`) {
+/**
+ * Track ERC-20 allowance vs a given spender (default: ObscuraAMM) and expose
+ * an `approve` button. Decimals must be passed because USDC on Arc is 6 dec.
+ */
+export function useTokenApproval(
+    tokenAddress: string | undefined,
+    amount: string,
+    decimals: number = 18,
+    spenderAddress?: `0x${string}`
+) {
     const { address } = useAccount();
     const [needsApproval, setNeedsApproval] = useState(false);
-    const spender = spenderAddress || SIMPLE_AMM_ADDRESS;
+    const spender = spenderAddress || OBSCURA_AMM_ADDRESS;
 
-    
     const { data: allowance, refetch: refetchAllowance } = useReadContract({
         address: tokenAddress as `0x${string}`,
         abi: ERC20_ABI,
@@ -19,7 +28,6 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
         },
     });
 
-    
     const {
         writeContract: approve,
         data: approvalHash,
@@ -27,7 +35,6 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
         error: approveError,
     } = useWriteContract();
 
-    
     const {
         isLoading: isApprovalConfirming,
         isSuccess: isApprovalConfirmed,
@@ -35,29 +42,23 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
         hash: approvalHash,
     });
 
-    
     useEffect(() => {
-        
         if (!amount || !tokenAddress) {
             setNeedsApproval(false);
             return;
         }
-
-        
         if (allowance === undefined) {
             setNeedsApproval(true);
             return;
         }
-
         try {
-            const amountBN = parseUnits(amount, 18);
-            setNeedsApproval(allowance < amountBN);
+            const amountBN = parseUnits(amount, decimals);
+            setNeedsApproval((allowance as bigint) < amountBN);
         } catch {
             setNeedsApproval(false);
         }
-    }, [allowance, amount, tokenAddress]);
+    }, [allowance, amount, tokenAddress, decimals]);
 
-    
     useEffect(() => {
         if (isApprovalConfirmed) {
             refetchAllowance();
@@ -66,9 +67,8 @@ export function useTokenApproval(tokenAddress: string | undefined, amount: strin
 
     const handleApprove = () => {
         if (!tokenAddress || !amount) return;
-
         try {
-            const amountBN = parseUnits(amount, 18);
+            const amountBN = parseUnits(amount, decimals);
             approve({
                 address: tokenAddress as `0x${string}`,
                 abi: ERC20_ABI,

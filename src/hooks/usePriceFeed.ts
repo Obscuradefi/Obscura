@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { fetchAssetPrice } from '../lib/priceOracle';
-import { ASSET_PRICE_SOURCE } from '../config/priceFeeds';
 
 export function usePriceFeed(symbol: string) {
     const [price, setPrice] = useState<number | null>(null);
@@ -9,41 +8,23 @@ export function usePriceFeed(symbol: string) {
 
     useEffect(() => {
         let isMounted = true;
-        let interval: NodeJS.Timeout;
-
-        const fetchPrice = async () => {
+        const run = async () => {
             try {
                 setLoading(true);
-
-                const source = ASSET_PRICE_SOURCE[symbol];
-                if (!source) {
-                    throw new Error(`No price source configured for ${symbol}`);
-                }
-
-                const newPrice = await fetchAssetPrice(symbol, source);
-
+                const p = await fetchAssetPrice(symbol);
                 if (isMounted) {
-                    setPrice(newPrice);
+                    setPrice(p);
                     setError(null);
                 }
             } catch (err: any) {
-                console.error(`Failed to fetch price for ${symbol}:`, err);
-                if (isMounted) {
-                    setError(err.message);
-                }
+                if (isMounted) setError(err?.message ?? 'price fetch failed');
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                if (isMounted) setLoading(false);
             }
         };
 
-        
-        fetchPrice();
-
-        
-        interval = setInterval(fetchPrice, 60000);
-
+        run();
+        const interval = setInterval(run, 60000);
         return () => {
             isMounted = false;
             clearInterval(interval);
@@ -59,47 +40,38 @@ export function useMultiplePriceFeeds(symbols: string[]) {
 
     useEffect(() => {
         let isMounted = true;
-        let interval: NodeJS.Timeout;
-
-        const fetchAllPrices = async () => {
+        const run = async () => {
             try {
                 setLoading(true);
-
-                const pricePromises = symbols.map(async (symbol) => {
-                    const source = ASSET_PRICE_SOURCE[symbol];
-                    if (!source) return { symbol, price: null };
-
-                    try {
-                        const price = await fetchAssetPrice(symbol, source);
-                        return { symbol, price };
-                    } catch {
-                        return { symbol, price: null };
-                    }
-                });
-
-                const results = await Promise.all(pricePromises);
-
+                const results = await Promise.all(
+                    symbols.map(async (sym) => {
+                        try {
+                            const p = await fetchAssetPrice(sym);
+                            return { sym, p };
+                        } catch {
+                            return { sym, p: null };
+                        }
+                    })
+                );
                 if (isMounted) {
-                    const priceMap: Record<string, number> = {};
-                    results.forEach(({ symbol, price }) => {
-                        if (price !== null) priceMap[symbol] = price;
+                    const map: Record<string, number> = {};
+                    results.forEach(({ sym, p }) => {
+                        if (p !== null) map[sym] = p;
                     });
-                    setPrices(priceMap);
+                    setPrices(map);
                 }
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                if (isMounted) setLoading(false);
             }
         };
 
-        fetchAllPrices();
-        interval = setInterval(fetchAllPrices, 60000);
-
+        run();
+        const interval = setInterval(run, 60000);
         return () => {
             isMounted = false;
             clearInterval(interval);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbols.join(',')]);
 
     return { prices, loading };

@@ -1,0 +1,59 @@
+{
+  "network": "arcTestnet",
+  "chainId": 5042002,
+  "timestamp": "2026-05-17T00:58:56.415Z",
+  "deployer": "0xBC0F85275613FAcB31773b5D8b44C803cdeCa06e",
+  "pyth": "0x2880aB155794e7179c9eE2e38200202908C17B43",
+  "contracts": {
+    "USDC": {
+      "address": "0x3600000000000000000000000000000000000000",
+      "decimals": 6,
+      "native": true
+    },
+    "EURC": {
+      "address": "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a",
+      "decimals": 6,
+      "native": true,
+      "priceId": "0xa995d00bb36a63cef7fd2c287dc105fc8f3d93779f062f09551b0af3e81ec30b"
+    },
+    "ObscuraAMM": "0x4822181f4f69d325d29Dbc00D53b9F1dD16FCb2c",
+    "ObscuraShield": "0xCE25bDf5D9491008B20d07dDE89eEbec091CceF4",
+    "ObscuraRFQ": "0x22B7724A330e759593c48631D27C6a2E51c7c764",
+    "ObscuraNanopay": "0x7Dc039156A64B3dC461C85dab362f997Dd8E4Cf1",
+    "tokens": {
+      "JPYC": {
+        "address": "0xDA3964BdC7AF48FC0A302C8f054AEf902A7D690d",
+        "decimals": 18,
+        "name": "Mock Japanese Yen Coin",
+        "priceId": "0xef2c98c804ba503c6a707e38be4dfbb16683775f195b091252bf24693042fd52",
+        "inverted": true
+      },
+      "GOLD": {
+        "address": "0x895d4F96AC85b2FAEF2EF25e4F7a168071A40045",
+        "decimals": 18,
+        "name": "Mock Tokenized Gold",
+        "priceId": "0x765d2ba906dbc32ca17cc11f5310a89e9ee1f6420508c63861f2f8ba4ee34bb2",
+        "inverted": false
+      },
+      "AAPL": {
+        "address": "0x2a4CC50c7ce443c4d37bfc4fC2A93b02fCd2e909",
+        "decimals": 18,
+        "name": "Mock Apple Equity",
+        "priceId": "0x49f6b65cb1de6b10eaf75e7c03ca029c306d0357e91b5311b175084a5ad55688",
+        "inverted": false
+      },
+      "MSTR": {
+        "address": "0xc456B58F91c947a27f4Ead2bEd6405758CB35F15",
+        "decimals": 18,
+        "name": "Mock MicroStrategy",
+        "priceId": "0xe1e80251e5f5184f2195008382538e847fafc36f751896889dd3d1b1f6111f09",
+        "inverted": false
+      }
+    }
+  },
+  "rfqMaker": "0xBC0F85275613FAcB31773b5D8b44C803cdeCa06e",
+  "rfqExtraMakers": [
+    "0x55882974d6465ad7E0988C0DF9520793C82f6F6F",
+    "0x83E59124096aF519D163E3B8293f8855275563BE"
+  ]
+}
